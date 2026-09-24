@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import rawConfig from '../data/config.json';
 import geo from '../data/new-taipei.geo.json';
-import { buildDataset, topSites } from './dataset';
+import { buildDataset, isPriority, topSites } from './dataset';
 import { parseConfig } from './config';
 
 const config = parseConfig(rawConfig);
@@ -71,7 +71,7 @@ describe('模擬資料集', () => {
       const d = district(name);
       const top = topSites(data.sites.filter((s) => s.district === name), 10);
       expect(top).toHaveLength(10);
-      expect(top.filter((s) => s.rate < d.target).length, name).toBeGreaterThanOrEqual(3);
+      expect(top.filter((s) => isPriority(s, d)).length, name).toBeGreaterThanOrEqual(3);
     }
   });
 

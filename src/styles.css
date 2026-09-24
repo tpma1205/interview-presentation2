@@ -569,6 +569,10 @@ b.primary {
   accent-color: var(--primary);
 }
 
+.field > span {
+  white-space: nowrap;
+}
+
 .field em {
   font-style: normal;
   color: var(--ink-3);
@@ -576,8 +580,8 @@ b.primary {
 
 .sim-form {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px 14px;
+  grid-template-columns: repeat(4, auto);
+  gap: 6px 10px;
   flex: none;
 }
 
@@ -1338,4 +1342,18 @@ b.primary {
 .sim-tag {
   margin-left: auto;
   color: var(--ink-3);
+}
+
+.control-badge {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--alert);
+  pointer-events: none;
 }

@@ -56,6 +56,11 @@ export interface Config {
   estimatedTriggerCases: number;
 }
 
+/** 依人口密度門檻判定的原始分區（未經手動調整） */
+export function zoneByDensity(zones: Record<ZoneKey, Zone>, density: number): ZoneKey {
+  return ZONE_KEYS.find((k) => density >= zones[k].minDensity) ?? 'rural';
+}
+
 /** 驗證手動編輯的 config，錯誤時丟出可讀訊息 */
 export function parseConfig(raw: unknown): Config {
   const c = raw as Config;

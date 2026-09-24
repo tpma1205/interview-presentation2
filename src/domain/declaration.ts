@@ -47,7 +47,8 @@ export const DOC_BUILDING = '空氣污染、噪音及監測設備清單';
 
 const BASIS_AIR = '營建工程空氣污染防制設施管理辦法第 18 條';
 const BASIS_PROCUREMENT = '投標廠商資格與特殊或巨額採購認定標準第 8 條';
-export const BASIS_BUILDING = '工務局函 北工施字第1121953044號';
+export const BUILDING_LETTER_NO = '北工施字第1121953044號';
+export const BASIS_BUILDING = `工務局函 ${BUILDING_LETTER_NO}`;
 
 /**
  * 申報前管制判定：行政區未達標 且 為大規模工程 → 觸發，須檢附污染防制設備清單；

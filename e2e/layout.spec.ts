@@ -6,6 +6,7 @@ import { openOffline } from './helpers';
  * 1. 所有元素都在畫布範圍內
  * 2. overflow 非 visible 的容器沒有被裁切的內容
  * 3. 含文字的元素字級 ≥ 20px（依畫布縮放換算為實際像素）
+ * 4. 文字彼此不重疊
  */
 async function layoutProblems(page: Page): Promise<string[]> {
   return page.evaluate(() => {
@@ -30,6 +31,27 @@ async function layoutProblems(page: Page): Promise<string[]> {
       const hasText = [...el.childNodes].some((n) => n.nodeType === Node.TEXT_NODE && n.textContent!.trim());
       if (hasText && parseFloat(style.fontSize) * scale < 20 * Math.min(1, scale) - 0.01) {
         problems.push(`字級 ${style.fontSize} < 20px：${label(el)}`);
+      }
+    }
+
+    // 4. 不同文字片段彼此不重疊（以文字節點的實際排版框判定）
+    const boxes: { text: string; r: DOMRect }[] = [];
+    const walker = document.createTreeWalker(stage, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      const text = n.textContent!.trim();
+      if (!text) continue;
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      for (const r of range.getClientRects()) if (r.width > 0 && r.height > 0) boxes.push({ text, r });
+    }
+    const TOLERANCE = 3 * scale;
+    for (let i = 0; i < boxes.length; i++) {
+      for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i].r;
+        const b = boxes[j].r;
+        const w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+        const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+        if (w > TOLERANCE && h > TOLERANCE) problems.push(`文字重疊：「${boxes[i].text.slice(0, 12)}」與「${boxes[j].text.slice(0, 12)}」`);
       }
     }
     return problems;

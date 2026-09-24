@@ -205,6 +205,11 @@ function solveDistrictRates(config: Config, emissionOf: (name: string) => number
 const sum = (xs: number[]) => xs.reduce((s, x) => s + x, 0);
 const clamp = (x: number, min: number, max: number) => Math.min(max, Math.max(min, x));
 
+/** 優先輔導：削減率低於所在行政區的分區目標 */
+export function isPriority(site: Site, district: Pick<DistrictSummary, 'target'>): boolean {
+  return site.rate < district.target;
+}
+
 /** 依排放量由高至低取前 n 處工地 */
 export function topSites<T extends { emission: number }>(sites: T[], n: number): T[] {
   return [...sites].sort((a, b) => b.emission - a.emission).slice(0, n);

@@ -3,7 +3,7 @@ import { SlideFrame } from './SlideFrame';
 
 const VALUES = [
   { no: '①', title: '客戶留存', text: '提升機關信任與履約績效，有利續約與投標評選' },
-  { no: '②', title: '效率', text: '有限查核人力集中於高污染源，協助機關達成環境部年度削減目標' },
+  { no: '②', title: '效率', text: '有限查核人力集中於高污染源，協助機關達成環境部年度目標' },
   { no: '③', title: '資料資產', text: '蒐集的監測設備清單，是未來 IoT 數據服務的前期名單' },
 ];
 

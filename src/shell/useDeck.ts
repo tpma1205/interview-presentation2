@@ -8,6 +8,8 @@ export interface DeckState {
   appendixOpen: boolean;
 }
 
+const clampPage = (page: number) => Math.min(PAGE_COUNT, Math.max(1, page));
+
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
   const tag = target.tagName;
@@ -26,7 +28,7 @@ export function useDeck() {
   const [state, setState] = useState<DeckState>({ page: 1, appendixOpen: false });
 
   const goTo = useCallback((page: number) => {
-    setState({ page: Math.min(PAGE_COUNT, Math.max(1, page)), appendixOpen: false });
+    setState({ page: clampPage(page), appendixOpen: false });
   }, []);
   const openAppendix = useCallback(() => setState((s) => ({ ...s, appendixOpen: true })), []);
   const closeAppendix = useCallback(() => setState((s) => ({ ...s, appendixOpen: false })), []);
@@ -53,7 +55,7 @@ export function useDeck() {
         e.preventDefault();
         const delta = key === 'arrowright' ? 1 : -1;
         setState((s) =>
-          s.appendixOpen ? s : { ...s, page: Math.min(PAGE_COUNT, Math.max(1, s.page + delta)) },
+          s.appendixOpen ? s : { ...s, page: clampPage(s.page + delta) },
         );
       }
     };

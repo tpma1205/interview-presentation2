@@ -26,7 +26,7 @@ test('摘要卡顯示全市削減率、未達標行政區數、預估觸發案�
   await expect(kpis).toContainText('7 件');
 });
 
-test('滑鼠移入未達標區顯示 tooltip 七項資訊與管制狀態', async ({ page }) => {
+test('滑鼠移入未達標區顯示 tooltip 七項資訊與申報前管制狀態', async ({ page }) => {
   await openDashboard(page);
   await district(page, '林口').hover({ force: true });
   const tip = page.getByTestId('map-tooltip');
@@ -36,7 +36,7 @@ test('滑鼠移入未達標區顯示 tooltip 七項資訊與管制狀態', async
   }
 });
 
-test('滑鼠移入達標區不顯示管制狀態', async ({ page }) => {
+test('滑鼠移入達標區不顯示申報前管制狀態', async ({ page }) => {
   await openDashboard(page);
   await district(page, '坪林').hover({ force: true });
   const tip = page.getByTestId('map-tooltip');

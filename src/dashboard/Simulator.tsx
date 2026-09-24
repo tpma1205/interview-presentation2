@@ -1,7 +1,8 @@
 import {
-  BASIS_BUILDING,
+  BUILDING_LETTER_NO,
   DOC_BUILDING,
   evaluateDeclaration,
+  type Criterion,
   type Declaration,
 } from '../domain/declaration';
 import { pct } from '../domain/format';
@@ -26,10 +27,12 @@ export const SCENARIOS: { label: string; value: SimulatorState }[] = [
   },
 ];
 
-const FIELDS: { key: keyof Declaration & ('areaM2' | 'durationMonths' | 'spoilM3' | 'contractWan'); label: string; unit: string; step: number }[] = [
+type NumericField = 'areaM2' | 'durationMonths' | 'spoilM3' | 'contractWan';
+
+const FIELDS: { key: NumericField; label: string; unit: string; step: number }[] = [
   { key: 'areaM2', label: '工地面積', unit: 'm²', step: 1000 },
   { key: 'durationMonths', label: '工期', unit: '月', step: 1 },
-  { key: 'spoilM3', label: '外運土石', unit: 'm³', step: 1000 },
+  { key: 'spoilM3', label: '外運土石', unit: 'm³ 鬆方', step: 1000 },
   { key: 'contractWan', label: '合約經費', unit: '萬元', step: 1000 },
 ];
 
@@ -40,9 +43,9 @@ interface Props {
 
 export function Simulator({ state, onChange }: Props) {
   const district = districtByName.get(state.district)!;
-  const r = evaluateDeclaration(state, district);
+  const judgement = evaluateDeclaration(state, district);
   const set = (patch: Partial<SimulatorState>) => onChange({ ...state, ...patch });
-  const [c1, c2, c3] = r.criteria;
+  const criteriaByBasis = groupByBasis(judgement.criteria);
 
   return (
     <div className="sim" data-testid="simulator">
@@ -107,37 +110,34 @@ export function Simulator({ state, onChange }: Props) {
           </span>
         </div>
         <div className="res-head">② 大規模工程（符合任一）</div>
-        <div className="res-basis">營建工程空氣污染防制設施管理辦法第 18 條</div>
-        <div className="res-row sub">
-          <Mark ok={c1.met} />
-          {c1.label}
-        </div>
-        <div className="res-row sub">
-          <Mark ok={c2.met} />
-          {c2.label}
-        </div>
-        <div className="res-basis">投標廠商資格與特殊或巨額採購認定標準第 8 條</div>
-        <div className="res-row sub">
-          <Mark ok={c3.met} />
-          {c3.label}
-        </div>
+        {criteriaByBasis.map(([basis, criteria]) => (
+          <div key={basis}>
+            <div className="res-basis">{basis}</div>
+            {criteria.map((c) => (
+              <div key={c.label} className="res-row sub">
+                <Mark ok={c.met} />
+                {c.label}
+              </div>
+            ))}
+          </div>
+        ))}
         <div className="verdict">
-          <span className={`pill ${r.isLarge ? 'on' : ''}`} data-testid="verdict-large">
-            大規模工程：{r.isLarge ? '是' : '否'}
+          <span className={`pill ${judgement.isLarge ? 'on' : ''}`} data-testid="verdict-large">
+            大規模工程：{judgement.isLarge ? '是' : '否'}
           </span>
-          <span className={`pill ${r.triggered ? 'alert' : ''}`} data-testid="verdict-trigger">
-            申報前管制：{r.triggered ? '觸發' : '未觸發'}
+          <span className={`pill ${judgement.triggered ? 'alert' : ''}`} data-testid="verdict-trigger">
+            申報前管制：{judgement.triggered ? '觸發' : '未觸發'}
           </span>
         </div>
         <div className="docs" data-testid="required-docs">
-          {r.triggered ? (
+          {judgement.triggered ? (
             <>
               <b>應檢附文件</b>
               <ul className="doc-list">
-                {r.requiredDocs.map((d) => (
+                {judgement.requiredDocs.map((d) => (
                   <li key={d}>
                     {d}
-                    {d === DOC_BUILDING && <span className="muted">（{BASIS_BUILDING.replace('工務局函 ', '')}）</span>}
+                    {d === DOC_BUILDING && <span className="muted">（{BUILDING_LETTER_NO}）</span>}
                   </li>
                 ))}
               </ul>
@@ -145,7 +145,7 @@ export function Simulator({ state, onChange }: Props) {
             </>
           ) : (
             <div className="muted">
-              {r.isLarge ? '行政區已達標，' : '非大規模工程，'}免附應檢附文件，依一般流程申報
+              {judgement.isLarge ? '行政區已達標，' : '非大規模工程，'}免附應檢附文件，依一般流程申報
             </div>
           )}
         </div>
@@ -156,4 +156,11 @@ export function Simulator({ state, onChange }: Props) {
 
 function Mark({ ok }: { ok: boolean }) {
   return <span className={`mark ${ok ? 'yes' : 'no'}`}>{ok ? '✓' : '✗'}</span>;
+}
+
+/** 依法規依據分組，保持條件原順序 */
+function groupByBasis(criteria: Criterion[]): [string, Criterion[]][] {
+  const groups = new Map<string, Criterion[]>();
+  for (const c of criteria) groups.set(c.basis, [...(groups.get(c.basis) ?? []), c]);
+  return [...groups];
 }

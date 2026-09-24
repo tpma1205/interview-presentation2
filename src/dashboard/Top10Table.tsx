@@ -1,4 +1,4 @@
-import { topSites } from '../domain/dataset';
+import { isPriority, topSites } from '../domain/dataset';
 import { pct, tons } from '../domain/format';
 import { dataset, districtByName } from '../domain/model';
 
@@ -19,12 +19,12 @@ export function Top10Table({ district, onBack }: Props) {
           <>
             <strong>{d.name}區</strong>
             <span className="muted">
-              {d.zoneLabel}・目標 {d.target}%・削減率{' '}
+              分區目標 {d.target}%・削減率{' '}
               <b className={d.underperforming ? 'alert' : 'primary'}>{pct(d.rate)}</b>
             </span>
             {d.underperforming && <span className="badge alert">申報前管制啟動中</span>}
-            <button className="back-btn push-right" onClick={onBack} aria-label="返回全市">
-              ← 全市
+            <button className="back-btn push-right" onClick={onBack}>
+              ← 返回全市
             </button>
           </>
         ) : (
@@ -48,7 +48,7 @@ export function Top10Table({ district, onBack }: Props) {
         </thead>
         <tbody>
           {rows.map((s) => {
-            const priority = s.rate < districtByName.get(s.district)!.target;
+            const priority = isPriority(s, districtByName.get(s.district)!);
             return (
               <tr key={s.id} className={priority ? 'is-priority' : ''}>
                 {!d && <td>{s.district}</td>}
