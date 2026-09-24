@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { pct } from '../domain/format';
 import { config, dataset } from '../domain/model';
 import { DistrictMap } from './DistrictMap';
+import { SCENARIOS, Simulator, type SimulatorState } from './Simulator';
 import { Top10Table } from './Top10Table';
 
 type Tab = 'top10' | 'simulator';
@@ -9,9 +10,12 @@ type Tab = 'top10' | 'simulator';
 export function Dashboard({ num }: { num: number }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('top10');
+  const [sim, setSim] = useState<SimulatorState>(SCENARIOS[0].value);
+  // 點擊地圖：切到 TOP 10，並將行政區帶入申報模擬
   const select = (name: string) => {
     setSelected(name);
     setTab('top10');
+    setSim((s) => ({ ...s, district: name }));
   };
   const underperforming = dataset.districts.filter((d) => d.underperforming);
 
@@ -59,7 +63,11 @@ export function Dashboard({ num }: { num: number }) {
               新申報案件模擬
             </button>
           </div>
-          {tab === 'top10' ? <Top10Table district={selected} onBack={() => setSelected(null)} /> : null}
+          {tab === 'top10' ? (
+            <Top10Table district={selected} onBack={() => setSelected(null)} />
+          ) : (
+            <Simulator state={sim} onChange={setSim} />
+          )}
         </div>
       </div>
       <div className="map-source">行政區界線：內政部國土測繪中心</div>

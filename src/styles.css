@@ -505,3 +505,214 @@ b.primary {
   font-size: 20px;
   color: var(--ink-3);
 }
+
+/* ---------- 申報模擬 ---------- */
+.sim {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px 6px;
+  gap: 6px;
+  font-size: 20px;
+  line-height: 1.32;
+}
+
+.scenarios {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+.chip-btn {
+  border: 1px solid var(--primary-mid);
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 2px 12px;
+  font-size: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.chip-btn:hover {
+  background: #d2e6e6;
+}
+
+.sim-top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: none;
+}
+
+.inline-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.inline-field select {
+  height: 36px;
+  width: 110px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 8px;
+  background: #fff;
+}
+
+.inline-field.check input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--primary);
+}
+
+.field em {
+  font-style: normal;
+  color: var(--ink-3);
+}
+
+.sim-form {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px 14px;
+  flex: none;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--ink-2);
+}
+
+.field select,
+.field input[type='number'] {
+  width: 100%;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 8px;
+  background: #fff;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.input-unit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.input-unit em {
+  font-style: normal;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.field.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  align-self: end;
+  height: 36px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.field.check input {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--primary);
+}
+
+.sim-result {
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid var(--line);
+  padding-top: 6px;
+}
+
+.res-head {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.res-basis {
+  color: var(--ink-3);
+  padding-left: 32px;
+}
+
+.res-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.res-row.sub {
+  padding-left: 32px;
+}
+
+.mark {
+  display: inline-flex;
+  width: 24px;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.mark.yes {
+  color: var(--primary);
+}
+
+.mark.no {
+  color: var(--ink-3);
+}
+
+.tag {
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.tag.alert {
+  background: var(--alert-soft);
+  color: var(--alert);
+}
+
+.verdict {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.pill {
+  padding: 2px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-weight: 700;
+}
+
+.pill.on {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.pill.alert {
+  border-color: var(--alert);
+  color: #fff;
+  background: var(--alert);
+}
+
+.docs {
+  margin-top: 6px;
+}
+
+.doc-list {
+  margin: 0;
+  padding-left: 32px;
+}
