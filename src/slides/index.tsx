@@ -1,22 +1,25 @@
 import type { ComponentType } from 'react';
 import { Dashboard } from '../dashboard/Dashboard';
-import { SlideFrame } from './SlideFrame';
+import { Slide1Goals } from './Slide1Goals';
+import { Slide2Plan } from './Slide2Plan';
+import { Slide4Value } from './Slide4Value';
+import { Slide5Gtm } from './Slide5Gtm';
+import { Slide6Tech } from './Slide6Tech';
+import { Slide7Docs } from './Slide7Docs';
+import { Slide8Metrics } from './Slide8Metrics';
 
 export interface SlideProps {
   num: number;
 }
 
-const placeholder =
-  (title: string): ComponentType<SlideProps> =>
-  ({ num }) => <SlideFrame num={num} title={title}>{null}</SlideFrame>;
-
+/** 固定 8 頁，依序 */
 export const SLIDES: ComponentType<SlideProps>[] = [
-  placeholder('專案目標'),
-  placeholder('執行規劃'),
+  Slide1Goals,
+  Slide2Plan,
   Dashboard,
-  placeholder('商業價值'),
-  placeholder('GTM 策略'),
-  placeholder('技術規格、技術架構'),
-  placeholder('規格文件、交互文件'),
-  placeholder('成果為何（成效指標設計）'),
+  Slide4Value,
+  Slide5Gtm,
+  Slide6Tech,
+  Slide7Docs,
+  Slide8Metrics,
 ];

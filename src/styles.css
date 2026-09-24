@@ -716,3 +716,513 @@ b.primary {
   margin: 0;
   padding-left: 32px;
 }
+
+/* ---------- 簡報內容頁 ---------- */
+.section-label {
+  font-size: 22px;
+  color: var(--primary);
+  margin: 18px 0 10px;
+  font-weight: 700;
+}
+
+.chip {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip.alert {
+  background: var(--alert-soft);
+  color: var(--alert);
+}
+
+.cite {
+  font-size: 20px;
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+.card-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.card-text {
+  color: var(--ink-2);
+}
+
+/* 第 1 頁 */
+.origin {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 22px;
+  font-size: 24px;
+  border-left: 6px solid var(--primary);
+}
+
+.origin-label {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 170px;
+  gap: 18px;
+  min-height: 0;
+}
+
+.problem {
+  display: flex;
+  gap: 20px;
+  padding: 22px 26px;
+  align-items: center;
+  font-size: 24px;
+}
+
+.big-no {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 流程圖 */
+.flow {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 40px;
+}
+
+.flow-step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+
+.flow-step.is-highlight {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.flow-no {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  padding-top: 3px;
+}
+
+.flow-detail {
+  margin-top: 8px;
+  color: var(--ink-2);
+}
+
+.flow-row .flow-step {
+  flex: 1;
+  flex-direction: column;
+  min-height: 300px;
+  padding: 24px 22px;
+}
+
+.flow-row .flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: -32px;
+  top: 50%;
+  border: 12px solid transparent;
+  border-left: 16px solid var(--primary-mid);
+  transform: translateY(-50%);
+}
+
+.flow-row .flow-title {
+  font-size: 28px;
+}
+
+.flow-column {
+  flex-direction: column;
+  gap: 34px;
+  width: 330px;
+  flex: none;
+  justify-content: center;
+}
+
+.flow-column .flow-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  border: 11px solid transparent;
+  border-top: 14px solid var(--primary-mid);
+  transform: translateX(-50%);
+}
+
+.flow-column .flow-step.is-highlight::before {
+  content: '';
+  position: absolute;
+  right: -34px;
+  top: 50%;
+  width: 34px;
+  border-top: 3px dashed var(--primary);
+}
+
+/* 第 2 頁 */
+.plan {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 32px;
+}
+
+.rules {
+  flex: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 14px 30px;
+  padding: 30px 26px 18px;
+  border: 2px solid var(--primary);
+}
+
+.rules-cap {
+  position: absolute;
+  top: -16px;
+  left: 20px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  padding: 2px 14px;
+  border-radius: 6px;
+}
+
+.rule-title {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+
+.formula {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 24px;
+}
+
+.frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.frac span:first-child {
+  border-bottom: 2px solid var(--ink);
+  padding: 0 6px;
+}
+
+.mini-table {
+  border-collapse: collapse;
+  font-size: 20px;
+}
+
+.mini-table th {
+  text-align: left;
+  padding: 2px 16px 2px 0;
+  color: var(--ink-2);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.mini-table td {
+  padding: 2px 0;
+  white-space: nowrap;
+}
+
+.rule-list {
+  margin: 0;
+  padding-left: 26px;
+}
+
+.rule-list li {
+  margin-bottom: 6px;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.trigger-out {
+  margin-bottom: 4px;
+}
+
+/* 第 4 頁 */
+.value-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  grid-auto-rows: 400px;
+}
+
+.value {
+  padding: 40px 32px;
+  border-top: 8px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 24px;
+}
+
+.value-no {
+  font-size: 48px;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.value-title {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* 第 6 頁 */
+.arch {
+  display: flex;
+  align-items: stretch;
+}
+
+.arch-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.arch-node {
+  flex: 1;
+  padding: 22px 18px;
+  text-align: center;
+  border: 2px solid var(--primary);
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.arch-title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.arch-sub {
+  color: var(--ink-2);
+  margin-top: 6px;
+}
+
+.arch-arrow {
+  flex: none;
+  width: 56px;
+  text-align: center;
+  font-size: 36px;
+  color: var(--primary-mid);
+}
+
+.spec-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  grid-auto-rows: 170px;
+}
+
+.spec {
+  padding: 18px 20px;
+  border-left: 6px solid var(--primary);
+}
+
+.spec-k {
+  font-weight: 700;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.spec-v {
+  color: var(--ink-2);
+}
+
+/* 第 7 頁 */
+.docs-layout {
+  display: flex;
+  gap: 26px;
+}
+
+.spec-table {
+  flex: 1;
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0;
+}
+
+.spec-table th {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+}
+
+.spec-table td {
+  padding: 9px 12px;
+  vertical-align: top;
+}
+
+.spec-table td.wrap {
+  white-space: normal;
+}
+
+.roles {
+  width: 340px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.role {
+  padding: 14px 20px;
+}
+
+.role.is-me {
+  border: 2px solid var(--primary);
+}
+
+.role-who {
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--primary);
+  margin-bottom: 4px;
+}
+
+.role ul {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.cross-flow {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+  padding: 12px 20px;
+  background: #fff;
+  border: 1px dashed var(--primary-mid);
+  border-radius: 10px;
+}
+
+.cross-label {
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+.cross-flow .arrow {
+  color: var(--primary-mid);
+  font-size: 26px;
+}
+
+/* 第 8 頁 */
+.metric-cols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  grid-auto-rows: 420px;
+}
+
+.metric {
+  padding: 24px 22px;
+  border-top: 8px solid var(--primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.metric.is-risk {
+  border-top-color: var(--alert);
+}
+
+.metric-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.metric ul {
+  margin: 0;
+  padding-left: 24px;
+}
+
+.metric li {
+  margin-bottom: 10px;
+}
+
+.metric-note {
+  margin-top: auto;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--alert-soft);
+  color: var(--alert);
+  font-weight: 600;
+}
+
+.slide.is-center > .slide-title {
+  margin-bottom: auto;
+}
+
+.slide.is-center::after {
+  content: '';
+  margin-top: auto;
+}
+
+.value .card-text {
+  font-size: 26px;
+  line-height: 1.5;
+}
+
+.flow-row .flow-detail {
+  font-size: 24px;
+}
