@@ -43,13 +43,23 @@ select {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  /* clip：不可被捲動，避免聚焦元素時畫面位移 */
+  overflow: clip;
+}
+
+.stage-frame {
+  flex: none;
+  position: relative;
+  overflow: clip;
 }
 
 .stage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
   width: 1366px;
   height: 768px;
-  flex: none;
   background: var(--bg);
   display: flex;
   flex-direction: column;

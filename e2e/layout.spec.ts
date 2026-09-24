@@ -59,9 +59,30 @@ async function layoutProblems(page: Page): Promise<string[]> {
 }
 
 const VIEWPORTS = [
+  { width: 1280, height: 720 },
   { width: 1366, height: 768 },
   { width: 1920, height: 1080 },
 ];
+
+/** 畫布須完整落在視窗內並置中（小視窗曾因聚焦元素被捲動而裁切左側） */
+async function expectStageFitsWindow(page: Page) {
+  const { rect, vw, vh } = await page.evaluate(() => ({
+    rect: document.querySelector('[data-testid="stage"]')!.getBoundingClientRect().toJSON(),
+    vw: window.innerWidth,
+    vh: window.innerHeight,
+  }));
+  expect(rect.left).toBeGreaterThanOrEqual(-1);
+  expect(rect.top).toBeGreaterThanOrEqual(-1);
+  expect(rect.right).toBeLessThanOrEqual(vw + 1);
+  expect(rect.bottom).toBeLessThanOrEqual(vh + 1);
+  expect(Math.abs(rect.left - (vw - rect.width) / 2)).toBeLessThan(2);
+}
+
+
+/** 模擬 Tab 鍵導覽或頁內搜尋：瀏覽器會把元素捲入可視範圍 */
+async function scrollIntoView(page: Page, selector: string) {
+  await page.locator(selector).first().evaluate((el) => el.scrollIntoView({ block: 'center', inline: 'center' }));
+}
 
 for (const vp of VIEWPORTS) {
   test.describe(`${vp.width}×${vp.height}`, () => {
@@ -75,6 +96,9 @@ for (const vp of VIEWPORTS) {
       }
       await page.keyboard.press('a');
       expect(await layoutProblems(page), '附錄').toEqual([]);
+      await page.getByRole('button', { name: '儀表板' }).click();
+      await scrollIntoView(page, '.kpi:last-child');
+      await expectStageFitsWindow(page);
     });
 
     test('儀表板各狀態皆無溢出', async ({ page }) => {
@@ -90,6 +114,9 @@ for (const vp of VIEWPORTS) {
         await page.getByRole('button', { name: scenario, exact: true }).click();
         expect(await layoutProblems(page), scenario).toEqual([]);
       }
+      await page.getByLabel('合約經費').focus();
+      await scrollIntoView(page, '.chip-btn:last-child');
+      await expectStageFitsWindow(page);
     });
   });
 }
