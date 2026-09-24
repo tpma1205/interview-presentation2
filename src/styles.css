@@ -1226,3 +1226,116 @@ b.primary {
 .flow-row .flow-detail {
   font-size: 24px;
 }
+
+/* ---------- 附錄 ---------- */
+.appendix-back {
+  position: absolute;
+  top: 74px;
+  right: 48px;
+}
+
+.chart-card {
+  padding: 8px 0;
+  position: relative;
+}
+
+.chart-card svg {
+  display: block;
+}
+
+.grid-line {
+  stroke: #e3e9ea;
+}
+
+.axis-text {
+  font-size: 20px;
+  fill: var(--ink-2);
+}
+
+.threshold-line {
+  stroke: var(--alert);
+  stroke-width: 2;
+  stroke-dasharray: 8 6;
+}
+
+.threshold-text {
+  font-size: 20px;
+  font-weight: 700;
+  fill: var(--alert);
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 5px;
+}
+
+.stem {
+  stroke: #d3dcde;
+  stroke-width: 2;
+}
+
+.dot {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.dot.adjusted {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
+
+.leader {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.5;
+}
+
+.callout-box {
+  fill: #fff;
+  stroke: var(--ink-2);
+}
+
+.callout-title {
+  font-size: 20px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.callout-text {
+  font-size: 20px;
+  fill: var(--ink-2);
+}
+
+.chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 0 24px;
+  font-size: 20px;
+  color: var(--ink-2);
+}
+
+.chart-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot-sw {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.diamond-sw {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  background: var(--primary-mid);
+  border: 2px solid var(--ink);
+  transform: rotate(45deg);
+}
+
+.sim-tag {
+  margin-left: auto;
+  color: var(--ink-3);
+}

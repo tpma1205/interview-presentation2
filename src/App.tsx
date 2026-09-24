@@ -1,7 +1,7 @@
 import { Stage } from './shell/Stage';
 import { DASHBOARD_PAGE, PAGE_COUNT, useDeck } from './shell/useDeck';
 import { SLIDES } from './slides';
-import { SlideFrame } from './slides/SlideFrame';
+import { Appendix } from './slides/Appendix';
 
 export function App() {
   const deck = useDeck();
@@ -30,11 +30,7 @@ export function App() {
         </nav>
       </header>
       {deck.appendixOpen ? (
-        <SlideFrame title="附錄">
-          <button className="back-btn" onClick={deck.closeAppendix}>
-            ← 返回第 {deck.page} 頁
-          </button>
-        </SlideFrame>
+        <Appendix returnPage={deck.page} onBack={deck.closeAppendix} />
       ) : (
         <Current num={deck.page} />
       )}
