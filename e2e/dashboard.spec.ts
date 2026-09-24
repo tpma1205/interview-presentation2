@@ -48,3 +48,28 @@ test('儀表板角落顯示「數據為模擬示意」', async ({ page }) => {
   await openDashboard(page);
   await expect(page.getByText('數據為模擬示意').first()).toBeVisible();
 });
+
+test('初始顯示全市 TOP 10（含行政區欄），不顯示「8 成」說明', async ({ page }) => {
+  await openDashboard(page);
+  const top10 = page.getByTestId('top10');
+  await expect(top10).toContainText('全市 TOP 10 排放工地');
+  await expect(top10.locator('th', { hasText: '行政區' })).toBeVisible();
+  await expect(top10.locator('tbody tr')).toHaveCount(10);
+  await expect(top10).not.toContainText('8 成');
+  await expect(top10).not.toContainText('80%');
+});
+
+test('點擊未達標區顯示該區 TOP 10 並標示優先輔導，可返回全市', async ({ page }) => {
+  await openDashboard(page);
+  await page.getByRole('tab', { name: '新申報案件模擬' }).click();
+  await district(page, '新莊').click({ force: true });
+  await expect(page.getByRole('tab', { name: 'TOP 10 工地' })).toHaveAttribute('aria-selected', 'true');
+  const top10 = page.getByTestId('top10');
+  await expect(top10).toContainText('新莊區');
+  await expect(top10).toContainText('申報前管制啟動中');
+  await expect(top10.locator('tbody tr')).toHaveCount(10);
+  expect(await top10.getByText('優先輔導').count()).toBeGreaterThanOrEqual(3);
+  await expect(top10.locator('td').first()).toHaveText(/^工地 A-\d{3}$/);
+  await page.getByRole('button', { name: '返回全市' }).click();
+  await expect(top10).toContainText('全市 TOP 10 排放工地');
+});

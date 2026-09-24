@@ -230,7 +230,7 @@ select {
 
 .dash-map {
   position: relative;
-  width: 580px;
+  width: 530px;
   flex: none;
   padding: 6px 10px 0;
   display: flex;
@@ -385,4 +385,123 @@ select {
   font-size: 20px;
   fill: var(--ink-3);
   pointer-events: none;
+}
+
+/* ---------- 右側面板 ---------- */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  flex: none;
+}
+
+.tabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 6px 0 4px;
+  font-size: 22px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+
+.tabs button[aria-selected='true'] {
+  color: var(--primary);
+  font-weight: 700;
+  border-bottom-color: var(--primary);
+}
+
+.top10 {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px 6px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+  flex: none;
+  white-space: nowrap;
+}
+
+.panel-head strong {
+  font-size: 22px;
+}
+
+.push-right {
+  margin-left: auto;
+}
+
+.muted {
+  color: var(--ink-2);
+  font-size: 20px;
+}
+
+b.alert,
+.alert {
+  color: var(--alert);
+}
+
+b.primary {
+  color: var(--primary);
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 20px;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.badge.alert {
+  background: var(--alert-soft);
+  color: var(--alert);
+  font-weight: 600;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 20px;
+  line-height: 1.25;
+  margin-top: 4px;
+}
+
+.data-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink-2);
+  border-bottom: 2px solid var(--line);
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 5px 5px;
+  border-bottom: 1px solid #edf1f2;
+  white-space: nowrap;
+}
+
+.data-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table tr.is-priority .rate {
+  color: var(--alert);
+  font-weight: 700;
+}
+
+.table-foot {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  color: var(--ink-3);
 }

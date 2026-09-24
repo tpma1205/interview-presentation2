@@ -2,9 +2,17 @@ import { useState } from 'react';
 import { pct } from '../domain/format';
 import { config, dataset } from '../domain/model';
 import { DistrictMap } from './DistrictMap';
+import { Top10Table } from './Top10Table';
+
+type Tab = 'top10' | 'simulator';
 
 export function Dashboard({ num }: { num: number }) {
   const [selected, setSelected] = useState<string | null>(null);
+  const [tab, setTab] = useState<Tab>('top10');
+  const select = (name: string) => {
+    setSelected(name);
+    setTab('top10');
+  };
   const underperforming = dataset.districts.filter((d) => d.underperforming);
 
   return (
@@ -27,7 +35,7 @@ export function Dashboard({ num }: { num: number }) {
       </div>
       <div className="dash-body">
         <div className="dash-map card">
-          <DistrictMap width={560} height={488} selected={selected} onSelect={setSelected} />
+          <DistrictMap width={510} height={488} selected={selected} onSelect={select} />
           <div className="map-legend">
             <span>
               <i className="sw ok" />
@@ -43,7 +51,15 @@ export function Dashboard({ num }: { num: number }) {
           </span>
         </div>
         <div className="dash-panel card" data-testid="dash-panel">
-          {selected ?? '全市'}
+          <div className="tabs" role="tablist">
+            <button role="tab" aria-selected={tab === 'top10'} onClick={() => setTab('top10')}>
+              TOP 10 工地
+            </button>
+            <button role="tab" aria-selected={tab === 'simulator'} onClick={() => setTab('simulator')}>
+              新申報案件模擬
+            </button>
+          </div>
+          {tab === 'top10' ? <Top10Table district={selected} onBack={() => setSelected(null)} /> : null}
         </div>
       </div>
       <div className="map-source">行政區界線：內政部國土測繪中心</div>
