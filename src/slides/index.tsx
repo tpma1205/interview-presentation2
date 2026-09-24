@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { Dashboard } from '../dashboard/Dashboard';
 import { SlideFrame } from './SlideFrame';
 
 export interface SlideProps {
@@ -12,7 +13,7 @@ const placeholder =
 export const SLIDES: ComponentType<SlideProps>[] = [
   placeholder('專案目標'),
   placeholder('執行規劃'),
-  placeholder('執行成果（儀表板 Demo）'),
+  Dashboard,
   placeholder('商業價值'),
   placeholder('GTM 策略'),
   placeholder('技術規格、技術架構'),
