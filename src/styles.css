@@ -1,0 +1,164 @@
+:root {
+  --primary: #0f5c63;
+  --primary-soft: #e3f0f0;
+  --primary-mid: #5f9ea3;
+  --alert: #d9531e;
+  --alert-soft: #fbe7dd;
+  --ink: #1d2a30;
+  --ink-2: #4a5a62;
+  --ink-3: #7a8990;
+  --line: #d5dde0;
+  --bg: #f6f8f8;
+  --card: #ffffff;
+  --ok: #7fb3b0;
+  font-family: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+  color: var(--ink);
+  background: #1d2a30;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* 16:9 設計畫布 1366×768，依視窗等比縮放 */
+.viewport {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.stage {
+  width: 1366px;
+  height: 768px;
+  flex: none;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-size: 22px;
+  line-height: 1.45;
+}
+
+.topbar {
+  height: 48px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: var(--primary);
+  color: #fff;
+}
+
+.topbar .project {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 4px;
+}
+
+.topbar nav button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 20px;
+  padding: 4px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.topbar nav button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.topbar nav button[aria-current='true'] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.slide {
+  flex: 1;
+  min-height: 0;
+  padding: 26px 48px 44px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-title {
+  margin: 0 0 20px;
+  font-size: 36px;
+  line-height: 1.25;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.slide-title .num {
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.slide-title .sub {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink-2);
+}
+
+.pager {
+  position: absolute;
+  right: 28px;
+  bottom: 12px;
+  font-size: 20px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-note {
+  position: absolute;
+  font-size: 20px;
+  color: var(--ink-3);
+  background: rgba(255, 255, 255, 0.85);
+  padding: 0 8px;
+  border-radius: 4px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.back-btn {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: #fff;
+  border-radius: 8px;
+  padding: 2px 16px;
+  font-size: 20px;
+  cursor: pointer;
+}
