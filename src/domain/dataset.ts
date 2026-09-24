@@ -42,11 +42,11 @@ export interface Dataset {
   city: { emission: number; reduction: number; rate: number };
 }
 
-/** 一般工地的工程類型權重（依分區） */
+/** 一般工地的工程類型權重（依分區，順序同 PROJECT_TYPES：RC、SRC、拆除、道路、隧道、管線、橋樑、區域開發、疏濬、其他） */
 const TYPE_WEIGHTS: Record<ZoneKey, number[]> = {
-  metro: [50, 15, 5, 3, 20, 7],
-  developing: [40, 20, 3, 7, 18, 12],
-  rural: [20, 30, 0, 0, 20, 30],
+  metro: [30, 18, 10, 10, 3, 15, 3, 2, 1, 8],
+  developing: [25, 10, 8, 15, 2, 14, 6, 8, 4, 8],
+  rural: [15, 2, 6, 28, 1, 14, 14, 2, 10, 8],
 };
 
 /** 一般工地的排放規模係數（依分區） */

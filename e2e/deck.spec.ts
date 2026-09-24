@@ -19,13 +19,13 @@ test('←/→ 翻頁並顯示頁碼，不越界', async ({ page }) => {
   await expect(pager).toHaveText('7 / 8');
 });
 
-test('導覽列「儀表板」跳到第 3 頁', async ({ page }) => {
+test('導覽列「儀錶板」跳到第 3 頁', async ({ page }) => {
   await openOffline(page);
-  await page.getByRole('button', { name: '儀表板' }).click();
+  await page.getByRole('button', { name: '儀錶板' }).click();
   await expect(page.getByTestId('pager')).toHaveText('3 / 8');
 });
 
 test('頁首顯示專案名稱', async ({ page }) => {
   await openOffline(page);
-  await expect(page.locator('.topbar')).toContainText('營建工程污染削減監測儀表板與申報前管制機制');
+  await expect(page.locator('.topbar')).toContainText('新北市營建工程污染削減監測儀錶板');
 });

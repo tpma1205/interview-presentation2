@@ -7,6 +7,7 @@ import { openOffline } from './helpers';
  * 2. overflow 非 visible 的容器沒有被裁切的內容
  * 3. 含文字的元素字級 ≥ 20px（依畫布縮放換算為實際像素）
  * 4. 文字彼此不重疊
+ * 5. 段落換行後最後一行不只剩一兩個字
  */
 async function layoutProblems(page: Page): Promise<string[]> {
   return page.evaluate(() => {
@@ -54,6 +55,20 @@ async function layoutProblems(page: Page): Promise<string[]> {
         if (w > TOLERANCE && h > TOLERANCE) problems.push(`文字重疊：「${boxes[i].text.slice(0, 12)}」與「${boxes[j].text.slice(0, 12)}」`);
       }
     }
+
+    // 5. 行尾孤字：同一段文字換行後，最後一行只剩一兩個字
+    const walker2 = document.createTreeWalker(stage, NodeFilter.SHOW_TEXT);
+    for (let n = walker2.nextNode(); n; n = walker2.nextNode()) {
+      const text = n.textContent!.trim();
+      if (text.length < 4) continue;
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      const lines = [...range.getClientRects()].filter((r) => r.width > 0);
+      if (lines.length < 2) continue;
+      const fontSize = parseFloat(getComputedStyle(n.parentElement!).fontSize) * scale;
+      const last = lines[lines.length - 1];
+      if (last.width < fontSize * 2.5) problems.push(`行尾孤字：「${text.slice(-4)}」`);
+    }
     return problems;
   });
 }
@@ -96,26 +111,21 @@ for (const vp of VIEWPORTS) {
       }
       await page.keyboard.press('a');
       expect(await layoutProblems(page), '附錄').toEqual([]);
-      await page.getByRole('button', { name: '儀表板' }).click();
+      await page.getByRole('button', { name: '儀錶板' }).click();
       await scrollIntoView(page, '.kpi:last-child');
       await expectStageFitsWindow(page);
     });
 
-    test('儀表板各狀態皆無溢出', async ({ page }) => {
+    test('儀錶板各狀態皆無溢出', async ({ page }) => {
       await openOffline(page);
-      await page.getByRole('button', { name: '儀表板' }).click();
+      await page.getByRole('button', { name: '儀錶板' }).click();
       for (const name of ['新莊', '三重', '林口', '淡水', '板橋', '烏來']) {
         await page.locator(`path[data-district="${name}"]`).click({ force: true });
         await page.mouse.move(1300, 740);
         expect(await layoutProblems(page), `${name} TOP 10`).toEqual([]);
       }
-      await page.getByRole('tab', { name: '新申報案件模擬' }).click();
-      for (const scenario of ['未達標區・大規模・房屋建築', '未達標區・非大規模', '達標區・大規模']) {
-        await page.getByRole('button', { name: scenario, exact: true }).click();
-        expect(await layoutProblems(page), scenario).toEqual([]);
-      }
-      await page.getByLabel('合約經費').focus();
-      await scrollIntoView(page, '.chip-btn:last-child');
+      await page.getByRole('button', { name: '返回全市' }).focus();
+      await scrollIntoView(page, '.table-foot');
       await expectStageFitsWindow(page);
     });
   });

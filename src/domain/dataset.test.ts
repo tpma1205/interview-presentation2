@@ -20,10 +20,10 @@ describe('模擬資料集', () => {
   it('未達標行政區恰為新莊、三重、林口、淡水，削減率等於設定值', () => {
     const failing = data.districts.filter((d) => d.underperforming).map((d) => d.name);
     expect(failing.sort()).toEqual([...FAILING].sort());
-    expect(district('新莊').rate).toBeCloseTo(66.8, 2);
-    expect(district('三重').rate).toBeCloseTo(68.1, 2);
-    expect(district('林口').rate).toBeCloseTo(63.5, 2);
-    expect(district('淡水').rate).toBeCloseTo(64.2, 2);
+    expect(district('新莊').rate).toBeCloseTo(61.8, 2);
+    expect(district('三重').rate).toBeCloseTo(63.1, 2);
+    expect(district('林口').rate).toBeCloseTo(56.5, 2);
+    expect(district('淡水').rate).toBeCloseTo(57.2, 2);
   });
 
   it('其餘 25 區削減率落在分區目標 +1% 至 +10%', () => {
@@ -35,17 +35,23 @@ describe('模擬資料集', () => {
     }
   });
 
-  it('分區目標：都會 70%、發展 67%、偏鄉 65%；八里、三峽手動調整為發展區', () => {
-    expect(district('永和').target).toBe(70);
-    expect(district('土城').target).toBe(67);
-    expect(district('烏來').target).toBe(65);
-    expect(district('八里')).toMatchObject({ zone: 'developing', target: 67, manualAdjusted: true });
-    expect(district('三峽')).toMatchObject({ zone: 'developing', target: 67, manualAdjusted: true });
+  it('分區目標：都會 65%、發展 60%、偏鄉 56%；八里、三峽手動調整為發展區', () => {
+    expect(district('永和').target).toBe(65);
+    expect(district('土城').target).toBe(60);
+    expect(district('烏來').target).toBe(56);
+    expect(district('八里')).toMatchObject({ zone: 'developing', target: 60, manualAdjusted: true });
+    expect(district('三峽')).toMatchObject({ zone: 'developing', target: 60, manualAdjusted: true });
     expect(district('深坑')).toMatchObject({ zone: 'rural', manualAdjusted: false });
   });
 
-  it('全市削減率為 68.5%', () => {
-    expect(data.city.rate).toBeCloseTo(68.5, 2);
+  it('全市削減率為 61.5%，高於環境部 115 年目標 56%', () => {
+    expect(data.city.rate).toBeCloseTo(61.5, 2);
+    expect(data.city.rate).toBeGreaterThan(56);
+  });
+
+  it('工程類型僅限 RC、SRC、拆除、道路、隧道、管線、橋樑、區域開發、疏濬、其他', () => {
+    const allowed = ['RC', 'SRC', '拆除', '道路', '隧道', '管線', '橋樑', '區域開發', '疏濬', '其他'];
+    for (const s of data.sites) expect(allowed).toContain(s.type);
   });
 
   it('全市前 10 大工程合計約占總排放 80%，且位於指定行政區', () => {
@@ -97,6 +103,6 @@ describe('模擬資料集', () => {
   });
 
   it('config 設定無法達成全市削減率時，丟出可讀錯誤', () => {
-    expect(() => buildDataset({ ...config, cityReductionRate: 90 })).toThrow(/config\.json 設定錯誤/);
+    expect(() => buildDataset({ ...config, cityReductionRate: 80 })).toThrow(/config\.json 設定錯誤/);
   });
 });

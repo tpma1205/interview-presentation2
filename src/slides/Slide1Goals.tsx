@@ -1,30 +1,34 @@
-import type { SlideProps } from '.';
 import { SlideFrame } from './SlideFrame';
 
-const PROBLEMS = [
-  { title: '即時掌握達標狀況', text: '即時掌握新北市 29 個行政區的污染削減率達標狀況，確保符合環境部年度目標' },
-  { title: '找出優先輔導對象', text: '從行政區到工地，找出應優先輔導的對象' },
-  { title: '申報階段掌握設備規劃', text: '在申報階段掌握大規模工程的污染防制設備規劃' },
-  { title: '串接現場查核', text: '將申報資料提供給現場查核專案，作為現場比對依據' },
+/** 不斷行空白：讓數字、英文與前後文字留在同一行 */
+const NB = String.fromCharCode(160);
+
+/** 想解決的問題；編號與第 8 頁追蹤指標一一對應 */
+export const PROBLEMS = [
+  {
+    title: '即時掌握達標狀況',
+    text: `即時掌握新北市${NB}29${NB}個行政區的污染削減率達標狀況，確保符合環境部年度目標`,
+  },
+  { title: '掌握重點污染工程', text: '掌握施工中工地最具代表性的重點污染工程' },
+  { title: '源頭掌握污染防制設備', text: '提前掌握大規模工程的污染防制設備規劃，並提交現場查核專案人員作為查核依據' },
+  { title: '資料蒐集', text: `蒐集優良工地評選名單，以及${NB}IoT${NB}數據服務的前期名單` },
 ];
 
-export function Slide1Goals({ num }: SlideProps) {
+export function Slide1Goals() {
   return (
-    <SlideFrame num={num} title="專案目標" center>
-      <div className="origin card">
-        <span className="origin-label">起因</span>
-        <span>
-          計畫每年度需提出<b>加值服務</b>（非合約項目）
-        </span>
-      </div>
+    <SlideFrame title="專案目標" center>
+      <p className="origin">
+        <span className="label">起源</span>
+        計畫當年度擴充功能項目
+      </p>
       <h2 className="section-label">想解決的問題</h2>
-      <div className="grid-2x2">
+      <div className="numbered-grid">
         {PROBLEMS.map((p, i) => (
-          <div key={p.title} className="card problem">
-            <span className="big-no">{i + 1}</span>
+          <div key={p.title} className="numbered-item">
+            <span className="no">{i + 1}</span>
             <div>
-              <div className="card-title">{p.title}</div>
-              <div className="card-text">{p.text}</div>
+              <h3>{p.title}</h3>
+              <p>{p.text}</p>
             </div>
           </div>
         ))}

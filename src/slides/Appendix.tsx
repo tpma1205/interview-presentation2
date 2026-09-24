@@ -4,13 +4,13 @@ import { int } from '../domain/format';
 import { config } from '../domain/model';
 import { SlideFrame } from './SlideFrame';
 
-const W = 1270;
+const W = 1254;
 const H = 520;
 const MARGIN = { top: 16, right: 20, bottom: 70, left: 112 };
 
 const ZONE_COLOR: Record<ZoneKey, string> = {
   metro: 'var(--primary)',
-  developing: 'var(--primary-mid)',
+  developing: 'var(--primary-2)',
   rural: '#b7c4c7',
 };
 
@@ -39,7 +39,7 @@ export function Appendix({ returnPage, onBack }: { returnPage: number; onBack: (
       <button className="back-btn appendix-back" onClick={onBack}>
         ← 返回第 {returnPage} 頁
       </button>
-      <div className="chart-card card">
+      <div className="chart-card">
         <svg width={W} height={H} role="img" aria-label="行政區人口密度（對數刻度）與分區門檻" data-testid="density-chart">
           {ticks.map((t) => (
             <g key={t}>
@@ -92,15 +92,14 @@ export function Appendix({ returnPage, onBack }: { returnPage: number; onBack: (
           {adjusted.map((d, i) => {
             const cx = x(d.name)!;
             const cy = y(d.density);
-            // 註記框放在圖右上方空白處，引線由點向上再水平接到框左緣
+            // 註記放在圖右上方空白處，引線由點向上再水平接到註記左側
             const bx = 840;
-            const by = 16 + i * 104;
+            const by = i * 96;
             const ly = by + 48;
             const [line1, line2] = splitReason(d.adjustReason ?? '');
             return (
               <g key={d.name} className="callout" data-testid="callout">
                 <path d={`M ${cx} ${cy - 14} L ${cx} ${ly} L ${bx} ${ly}`} className="leader" />
-                <rect x={bx} y={by} width={410} height={96} rx={8} className="callout-box" />
                 <text x={bx + 14} y={by + 28} className="callout-title">
                   {d.name}：{config.zones[zoneByDensity(config.zones, d.density)].label} → {config.zones[d.zone].label}
                 </text>

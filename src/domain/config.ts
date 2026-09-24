@@ -2,25 +2,15 @@ export type ZoneKey = 'metro' | 'developing' | 'rural';
 
 export const ZONE_KEYS: ZoneKey[] = ['metro', 'developing', 'rural'];
 
-export const PROJECT_TYPES = [
-  '建築（RC/SRC）',
-  '道路／隧道',
-  '捷運／軌道',
-  '區段徵收／重劃',
-  '管線',
-  '橋梁／水利',
-] as const;
+export const PROJECT_TYPES = ['RC', 'SRC', '拆除', '道路', '隧道', '管線', '橋樑', '區域開發', '疏濬', '其他'] as const;
 export type ProjectType = (typeof PROJECT_TYPES)[number];
-
-/** 需申請建築執照的工程類型（房屋建築工程） */
-export const BUILDING_PROJECT_TYPE: ProjectType = '建築（RC/SRC）';
 
 export interface Zone {
   label: string;
   code: string;
   /** 分區目標（%） */
   target: number;
-  densityRule: string;
+  /** 人口密度下限（人/km²），用於附錄門檻線與原始分區判定 */
   minDensity: number;
   siteCountRange: [number, number];
 }
@@ -53,7 +43,6 @@ export interface Config {
   /** 全市削減率（%） */
   cityReductionRate: number;
   largeProjects: { shareOfCityEmission: number; sites: LargeProjectConfig[] };
-  estimatedTriggerCases: number;
 }
 
 /** 依人口密度門檻判定的原始分區（未經手動調整） */

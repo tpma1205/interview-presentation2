@@ -1,12 +1,12 @@
 {
-  "_note": "所有數值皆為模擬示意。百分比欄位以「%」為單位（例如 70 代表 70%）。",
+  "_note": "所有數值皆為模擬示意。百分比欄位以「%」為單位（例如 65 代表 65%）。",
   "year": 115,
   "seed": 115065,
-  "moenvTargets": { "115": 65, "116": 67 },
+  "moenvTargets": { "115": 56, "116": 60 },
   "zones": {
-    "metro": { "label": "都會區", "code": "A", "target": 70, "densityRule": "≥ 10,000 人/km²", "minDensity": 10000, "siteCountRange": [40, 90] },
-    "developing": { "label": "發展區", "code": "B", "target": 67, "densityRule": "1,500–10,000 人/km²", "minDensity": 1500, "siteCountRange": [20, 60] },
-    "rural": { "label": "偏鄉區", "code": "C", "target": 65, "densityRule": "< 1,500 人/km²", "minDensity": 0, "siteCountRange": [3, 15] }
+    "metro": { "label": "都會區", "code": "A", "target": 65, "minDensity": 10000, "siteCountRange": [40, 90] },
+    "developing": { "label": "發展區", "code": "B", "target": 60, "minDensity": 1500, "siteCountRange": [20, 60] },
+    "rural": { "label": "偏鄉區", "code": "C", "target": 56, "minDensity": 0, "siteCountRange": [3, 15] }
   },
   "districts": [
     { "name": "永和", "density": 36000, "zone": "metro", "manualAdjusted": false, "adjustReason": null },
@@ -39,23 +39,22 @@
     { "name": "坪林", "density": 35, "zone": "rural", "manualAdjusted": false, "adjustReason": null },
     { "name": "烏來", "density": 15, "zone": "rural", "manualAdjusted": false, "adjustReason": null }
   ],
-  "underperformingDistricts": { "新莊": 66.8, "三重": 68.1, "林口": 63.5, "淡水": 64.2 },
+  "underperformingDistricts": { "新莊": 61.8, "三重": 63.1, "林口": 56.5, "淡水": 57.2 },
   "compliantMarginRange": [1, 10],
-  "cityReductionRate": 68.5,
+  "cityReductionRate": 61.5,
   "largeProjects": {
     "shareOfCityEmission": 80,
     "sites": [
-      { "district": "林口", "type": "區段徵收／重劃", "emission": 618.4 },
-      { "district": "板橋", "type": "捷運／軌道", "emission": 523.7 },
-      { "district": "淡水", "type": "捷運／軌道", "emission": 448.2 },
-      { "district": "新莊", "type": "建築（RC/SRC）", "emission": 391.6 },
-      { "district": "新店", "type": "捷運／軌道", "emission": 342.9 },
-      { "district": "三重", "type": "捷運／軌道", "emission": 297.3 },
-      { "district": "中和", "type": "建築（RC/SRC）", "emission": 268.5 },
-      { "district": "林口", "type": "建築（RC/SRC）", "emission": 243.1 },
-      { "district": "土城", "type": "道路／隧道", "emission": 218.6 },
-      { "district": "淡水", "type": "區段徵收／重劃", "emission": 201.8 }
+      { "district": "林口", "type": "區域開發", "emission": 618.4 },
+      { "district": "板橋", "type": "隧道", "emission": 523.7 },
+      { "district": "淡水", "type": "橋樑", "emission": 448.2 },
+      { "district": "新莊", "type": "SRC", "emission": 391.6 },
+      { "district": "新店", "type": "隧道", "emission": 342.9 },
+      { "district": "三重", "type": "隧道", "emission": 297.3 },
+      { "district": "中和", "type": "SRC", "emission": 268.5 },
+      { "district": "林口", "type": "RC", "emission": 243.1 },
+      { "district": "土城", "type": "道路", "emission": 218.6 },
+      { "district": "淡水", "type": "區域開發", "emission": 201.8 }
     ]
-  },
-  "estimatedTriggerCases": 7
+  }
 }
