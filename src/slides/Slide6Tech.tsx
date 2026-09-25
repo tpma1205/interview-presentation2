@@ -20,40 +20,50 @@ const LANES = [
   { label: '判斷邏輯', top: 250 },
 ];
 
+/** 判斷菱形的上下頂點與中線 y 座標 */
+const DECISION = { top: 262, mid: 317, bottom: 372 };
+const OUTCOME_TOP = 400;
+
 const NODES: SopNode[] = [
-  { id: 'audit', x: COL.A, y: 18, w: W, h: 94, title: '現場查核專案', sub: '依環境部查核與計算\n方法產出查核紀錄' },
+  { id: 'audit', x: COL.A, y: 18, w: W, h: 94, title: '現場查核紀錄' },
   { id: 'db', x: COL.B, y: 18, w: W, h: 94, title: '資料庫', sub: 'MS SQL Server\n查核紀錄入庫' },
   { id: 'declare', x: COL.D, y: 18, w: W, h: 94, title: '新申報案件', sub: '業者於申報系統\n提出工程申報' },
-  { id: 'sql', x: COL.B, y: 146, w: W, h: 88, title: 'SQL 即時運算', sub: '工地彙總為\n行政區削減率' },
-  { id: 'dash', x: COL.C, y: 146, w: W, h: 88, title: '儀錶板', sub: '地圖上色、\nTOP 10 工地' },
-  { id: 'district', x: COL.C, y: 266, w: W, h: 70, title: '行政區削減率\n< 分區目標？', kind: 'decision' },
-  { id: 'large', x: COL.D, y: 266, w: W, h: 70, title: '大規模工程？', kind: 'decision' },
-  { id: 'control', x: COL.C, y: 382, w: W, h: 104, title: '申報前管制啟動中', sub: 'TOP 10 低於目標者\n列優先輔導', kind: 'alert' },
-  { id: 'docs', x: COL.D, y: 382, w: W, h: 104, title: '須檢附設備清單', sub: '房屋建築另附空污、\n噪音、監測設備清單', kind: 'alert' },
-  { id: 'compare', x: COL.A, y: 382, w: W, h: 104, title: '現場比對', sub: '清單回傳查核專案，\n比對實際布置' },
+  { id: 'sql', x: COL.B, y: 146, w: W, h: 88, title: 'SQL 即時運算' },
+  { id: 'dash', x: COL.C, y: 146, w: W, h: 88, title: '儀表板' },
+  { id: 'district', x: COL.C, y: DECISION.top, w: W, h: 110, title: '行政區削減率\n< 分區目標？', kind: 'decision' },
+  { id: 'large', x: COL.D, y: DECISION.top, w: W, h: 110, title: '大規模工程？', kind: 'decision' },
+  { id: 'control', x: COL.C, y: OUTCOME_TOP, w: W, h: 86, title: '申報前管制啟動中', sub: 'TOP 10 低於目標者\n列優先輔導', kind: 'alert' },
+  { id: 'docs', x: COL.D, y: OUTCOME_TOP, w: W, h: 86, title: '新增申報審查文件', kind: 'alert' },
+  { id: 'compare', x: COL.A, y: OUTCOME_TOP, w: W, h: 86, title: '現場比對', sub: '清單回傳查核專案，\n比對實際布置' },
 ];
 
 const mid = (a: number) => a + W / 2;
+const OUTCOME_BOTTOM = OUTCOME_TOP + 86;
 
 /** 連線：折線座標、標籤位置、是否為回饋虛線 */
 const EDGES: { d: string; label?: string; lx?: number; ly?: number; loop?: boolean }[] = [
   { d: `M ${COL.A + W} 65 H ${COL.B}`, label: '入庫', lx: COL.A + W + 5, ly: 92 },
   { d: `M ${mid(COL.B)} 112 V 146` },
   { d: `M ${COL.B + W} 190 H ${COL.C}` },
-  { d: `M ${mid(COL.C)} 234 V 266` },
-  { d: `M ${mid(COL.C)} 336 V 382`, label: '是', lx: mid(COL.C) + 10, ly: 366 },
-  { d: `M ${COL.C + W} 301 H ${COL.D}`, label: '是', lx: COL.C + W + 12, ly: 292 },
-  { d: `M ${COL.C} 301 H ${COL.B + W - 60}`, label: '否：持續監測', lx: COL.B + 24, ly: 308 },
-  { d: `M ${mid(COL.D)} 112 V 266`, label: '送出申報', lx: mid(COL.D) + 10, ly: 196 },
-  { d: `M ${mid(COL.D)} 336 V 382`, label: '是', lx: mid(COL.D) + 10, ly: 366 },
-  { d: `M ${COL.D + W} 301 H ${COL.D + W + 40}`, label: '否：一般申報', lx: COL.D + W + 46, ly: 308 },
-  { d: `M ${mid(COL.D)} 486 V 520 H ${mid(COL.A)} V 486`, label: '清單回傳', lx: mid(COL.B) - 40, ly: 512 },
-  { d: `M ${mid(COL.A)} 382 V 112`, label: '比對結果回饋', lx: mid(COL.A) + 12, ly: 250, loop: true },
+  { d: `M ${mid(COL.C)} 234 V ${DECISION.top}` },
+  { d: `M ${mid(COL.C)} ${DECISION.bottom} V ${OUTCOME_TOP}`, label: '是', lx: mid(COL.C) + 10, ly: 392 },
+  { d: `M ${COL.C + W} ${DECISION.mid} H ${COL.D}`, label: '是', lx: COL.C + W + 12, ly: DECISION.mid - 9 },
+  { d: `M ${COL.C} ${DECISION.mid} H ${COL.B + W - 60}`, label: '否：持續監測', lx: COL.B + 24, ly: DECISION.mid + 7 },
+  { d: `M ${mid(COL.D)} 112 V ${DECISION.top}`, label: '送出申報', lx: mid(COL.D) + 10, ly: 196 },
+  { d: `M ${mid(COL.D)} ${DECISION.bottom} V ${OUTCOME_TOP}`, label: '是', lx: mid(COL.D) + 10, ly: 392 },
+  { d: `M ${COL.D + W} ${DECISION.mid} H ${COL.D + W + 40}`, label: '否：一般申報', lx: COL.D + W + 46, ly: DECISION.mid + 7 },
+  {
+    d: `M ${mid(COL.D)} ${OUTCOME_BOTTOM} V 520 H ${mid(COL.A)} V ${OUTCOME_BOTTOM}`,
+    label: '蒐集名單',
+    lx: mid(COL.B) - 40,
+    ly: 512,
+  },
+  { d: `M ${mid(COL.A)} ${OUTCOME_TOP} V 112`, label: '比對結果回饋', lx: mid(COL.A) + 12, ly: 250, loop: true },
 ];
 
 export function Slide6Tech() {
   return (
-    <SlideFrame title="技術規格、技術架構" sub="SOP 流程圖">
+    <SlideFrame title="技術規格、技術架構">
       <div className="sop" data-testid="sop">
         {LANES.map((l) => (
           <div key={l.label} className="sop-lane" style={{ top: l.top }}>

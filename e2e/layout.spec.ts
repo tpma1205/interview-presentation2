@@ -111,14 +111,14 @@ for (const vp of VIEWPORTS) {
       }
       await page.keyboard.press('a');
       expect(await layoutProblems(page), '附錄').toEqual([]);
-      await page.getByRole('button', { name: '儀錶板' }).click();
+      await page.getByRole('button', { name: '儀表板' }).click();
       await scrollIntoView(page, '.kpi:last-child');
       await expectStageFitsWindow(page);
     });
 
-    test('儀錶板各狀態皆無溢出', async ({ page }) => {
+    test('儀表板各狀態皆無溢出', async ({ page }) => {
       await openOffline(page);
-      await page.getByRole('button', { name: '儀錶板' }).click();
+      await page.getByRole('button', { name: '儀表板' }).click();
       for (const name of ['新莊', '三重', '林口', '淡水', '板橋', '烏來']) {
         await page.locator(`path[data-district="${name}"]`).click({ force: true });
         await page.mouse.move(1300, 740);

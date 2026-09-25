@@ -49,17 +49,15 @@ export function Appendix({ returnPage, onBack }: { returnPage: number; onBack: (
               </text>
             </g>
           ))}
-          <text className="axis-text" transform={`translate(18 ${(H - MARGIN.bottom + MARGIN.top) / 2}) rotate(-90)`} textAnchor="middle">
-            人口密度（人/km²，對數刻度）
+          {/* 直書由上到下，不需轉頭閱讀 */}
+          <text
+            className="axis-text axis-title"
+            x={14}
+            y={(H - MARGIN.bottom + MARGIN.top) / 2}
+            textAnchor="middle"
+          >
+            人口密度（每平方公里人數，對數刻度）
           </text>
-          {thresholds.map((t) => (
-            <g key={t.v} data-testid="threshold">
-              <line x1={MARGIN.left} x2={W - MARGIN.right} y1={y(t.v)} y2={y(t.v)} className="threshold-line" />
-              <text x={MARGIN.left + 8} y={y(t.v) - 8} className="threshold-text">
-                {t.label}
-              </text>
-            </g>
-          ))}
           {sorted.map((d) => {
             const cx = x(d.name)!;
             const cy = y(d.density);
@@ -89,6 +87,15 @@ export function Appendix({ returnPage, onBack }: { returnPage: number; onBack: (
               </g>
             );
           })}
+          {/* 門檻線與文字畫在點與莖線之後，避免被遮蓋 */}
+          {thresholds.map((t) => (
+            <g key={t.v} data-testid="threshold">
+              <line x1={MARGIN.left} x2={W - MARGIN.right} y1={y(t.v)} y2={y(t.v)} className="threshold-line" />
+              <text x={MARGIN.left + 8} y={y(t.v) - 8} className="threshold-text">
+                {t.label}
+              </text>
+            </g>
+          ))}
           {adjusted.map((d, i) => {
             const cx = x(d.name)!;
             const cy = y(d.density);

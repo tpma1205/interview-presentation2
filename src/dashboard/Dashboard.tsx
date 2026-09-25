@@ -13,7 +13,7 @@ export function Dashboard() {
       <div className="dash-head">
         <h1 className="slide-title">
           <span>執行成果</span>
-          <span className="sub">儀錶板 Demo</span>
+          <span className="sub">儀表板 Demo</span>
         </h1>
         <div className="kpis">
           <Kpi

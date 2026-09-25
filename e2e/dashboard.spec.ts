@@ -3,7 +3,7 @@ import { openOffline } from './helpers';
 
 async function openDashboard(page: Page) {
   const ctx = await openOffline(page);
-  await page.getByRole('button', { name: '儀錶板' }).click();
+  await page.getByRole('button', { name: '儀表板' }).click();
   return ctx;
 }
 
@@ -58,7 +58,7 @@ test('地圖標示申報前管制啟動中的行政區', async ({ page }) => {
   for (const name of ['新莊', '三重', '林口', '淡水']) await expect(badge).toContainText(name);
 });
 
-test('儀錶板角落顯示「數據為模擬示意」', async ({ page }) => {
+test('儀表板角落顯示「數據為模擬示意」', async ({ page }) => {
   await openDashboard(page);
   await expect(page.getByText('數據為模擬示意').first()).toBeVisible();
 });

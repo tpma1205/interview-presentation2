@@ -3,7 +3,7 @@ import { DASHBOARD_PAGE, PAGE_COUNT, useDeck } from './shell/useDeck';
 import { SLIDES } from './slides';
 import { Appendix } from './slides/Appendix';
 
-export const PROJECT_TITLE = '新北市營建工程污染削減監測儀錶板';
+export const PROJECT_TITLE = '新北市營建工程污染量監測儀表板';
 
 export function App() {
   const deck = useDeck();
@@ -24,7 +24,7 @@ export function App() {
             aria-current={!deck.appendixOpen && deck.page === DASHBOARD_PAGE}
             onClick={() => deck.goTo(DASHBOARD_PAGE)}
           >
-            儀錶板
+            儀表板
           </button>
           <button aria-current={deck.appendixOpen} onClick={deck.openAppendix}>
             附錄
