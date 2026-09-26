@@ -109,3 +109,12 @@ test('全市施工中工地共 4,200 處，分布於 29 區', async ({ page }) =
   // 抽查 3 區：都會、發展區各應有數百處，偏鄉數十處
   expect(total).toBeGreaterThan(400);
 });
+
+test('地圖資料來源位於地圖卡片底部，不與地圖重疊', async ({ page }) => {
+  await openDashboard(page);
+  const map = (await page.locator('.map-box svg').boundingBox())!;
+  const source = (await page.getByTestId('map-source').boundingBox())!;
+  const card = (await page.locator('.dash-map').boundingBox())!;
+  expect(source.y).toBeGreaterThanOrEqual(map.y + map.height);
+  expect(source.y + source.height).toBeLessThanOrEqual(card.y + card.height + 1);
+});

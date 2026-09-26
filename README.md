@@ -40,8 +40,9 @@ npm run test:e2e     # 對建置結果做離線 E2E 與版面檢查（Playwright
 | `compliantMarginRange` | 其餘達標區的削減率範圍 = 分區目標 + `[min, max]`（預設 `[1, 10]`） |
 | `cityReductionRate` | **全市削減率**（排放量加權，預設 61.5；目前排放分布下可行範圍約 61–62） |
 | `totalSites` | **全市施工中工地總數**（預設 4200）；各區依 `siteCountRange` 抽樣後等比分配，合計精確等於此值 |
-| `largeProjects.shareOfCityEmission` | 前 10 大工程占全市排放比例（預設 80） |
-| `largeProjects.sites[]` | 前 10 大工程：`district` 所在行政區、`type` 工程類型、`emission` 排放量（公噸 TSP） |
+| `largeProjects.shareOfCityEmission` | 前 10 大工程占全市排放比例（預設 80）。全市排放量採 Zipf 長尾分布（第 r 名 = `topEmission` ÷ r^s），指數 s 由此比例反推（目前約 1.55） |
+| `largeProjects.topEmission` | 全市第 1 名工地排放量（公噸 TSP，預設 618.4），決定整體量級 |
+| `largeProjects.sites[]` | 前 10 大工程：`district` 所在行政區、`type` 工程類型；**陣列順序即排放名次**。順序會影響全市削減率的可行範圍，目前順序下約 60.5–61.75% |
 
 ### 常見調整
 

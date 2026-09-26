@@ -45,17 +45,18 @@
   "totalSites": 4200,
   "largeProjects": {
     "shareOfCityEmission": 80,
+    "topEmission": 618.4,
     "sites": [
-      { "district": "林口", "type": "區域開發", "emission": 618.4 },
-      { "district": "板橋", "type": "隧道", "emission": 523.7 },
-      { "district": "淡水", "type": "橋樑", "emission": 448.2 },
-      { "district": "新莊", "type": "SRC", "emission": 391.6 },
-      { "district": "新店", "type": "隧道", "emission": 342.9 },
-      { "district": "三重", "type": "隧道", "emission": 297.3 },
-      { "district": "中和", "type": "SRC", "emission": 268.5 },
-      { "district": "林口", "type": "RC", "emission": 243.1 },
-      { "district": "土城", "type": "道路", "emission": 218.6 },
-      { "district": "淡水", "type": "區域開發", "emission": 201.8 }
+      { "district": "林口", "type": "區域開發" },
+      { "district": "板橋", "type": "隧道" },
+      { "district": "中和", "type": "SRC" },
+      { "district": "新店", "type": "隧道" },
+      { "district": "土城", "type": "道路" },
+      { "district": "淡水", "type": "橋樑" },
+      { "district": "新莊", "type": "SRC" },
+      { "district": "三重", "type": "隧道" },
+      { "district": "林口", "type": "RC" },
+      { "district": "淡水", "type": "區域開發" }
     ]
   }
 }

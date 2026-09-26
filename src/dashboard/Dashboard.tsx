@@ -26,7 +26,7 @@ export function Dashboard() {
       </div>
       <div className="dash-body">
         <div className="dash-map">
-          <DistrictMap width={490} height={488} selected={selected} onSelect={setSelected} />
+          <DistrictMap width={490} height={460} selected={selected} onSelect={setSelected} />
           <div className="map-legend">
             <span>
               <i className="sw ok" />
@@ -37,9 +37,9 @@ export function Dashboard() {
               未達標・申報前管制啟動中
             </span>
           </div>
-          <span className="sim-note" style={{ left: 12, top: 8 }}>
+          <div className="map-source" data-testid="map-source">
             界線：內政部國土測繪中心
-          </span>
+          </div>
         </div>
         <div className="dash-panel" data-testid="dash-panel">
           <Top10Table district={selected} onBack={() => setSelected(null)} />

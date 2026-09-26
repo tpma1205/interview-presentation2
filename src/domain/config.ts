@@ -23,11 +23,10 @@ export interface DistrictConfig {
   adjustReason: string | null;
 }
 
+/** 全市前 N 大工程；陣列順序即排放量名次（第 1 筆為全市最大） */
 export interface LargeProjectConfig {
   district: string;
   type: ProjectType;
-  /** 相對排放權重（公噸），最終會縮放至占全市約 shareOfCityEmission% */
-  emission: number;
 }
 
 export interface Config {
@@ -44,7 +43,13 @@ export interface Config {
   cityReductionRate: number;
   /** 全市施工中工地總數；各區依分區範圍抽樣後等比調整至此總數 */
   totalSites: number;
-  largeProjects: { shareOfCityEmission: number; sites: LargeProjectConfig[] };
+  largeProjects: {
+    /** 前 N 大合計占全市排放比例（%）；據此反推 Zipf 長尾指數 */
+    shareOfCityEmission: number;
+    /** 全市第 1 名工地排放量（公噸 TSP），決定整體量級 */
+    topEmission: number;
+    sites: LargeProjectConfig[];
+  };
 }
 
 /** 依人口密度門檻判定的原始分區（未經手動調整） */

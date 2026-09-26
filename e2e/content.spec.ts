@@ -34,7 +34,7 @@ test('第 1 頁：起源、四個目標與各自的解決方案', async ({ page 
     '起源',
     '計畫執行年度精進亮點（非合約項目）',
     '即時掌握污染數據',
-    '確保符合環境部年度削減量目標',
+    '確保符合環境部年度削減率目標',
     '合理配置人力資源',
     '源頭掌握污染防制設備',
     '資料蒐集',
@@ -74,22 +74,38 @@ test('第 4 頁：查核效率', async ({ page }) => {
   await expect(await goTo(page, 4)).toContainText('查核效率');
 });
 
-test('第 5 頁：流程圖涵蓋資料來源、分析運用、判斷邏輯，判斷為菱形', async ({ page }) => {
+test('第 5 頁：流程圖依負責單位分三道，節點位於各自泳道，判斷為菱形', async ({ page }) => {
   await openOffline(page);
   const slide = await goTo(page, 5);
   const sop = slide.getByTestId('sop');
-  for (const lane of ['資料來源', '分析運用', '判斷邏輯']) await expect(sop).toContainText(lane);
+  await expect(sop.locator('.sop-lane span')).toHaveText(['現場查核', '系統平台', '申報審查']);
+
+  // 每個節點的垂直位置落在所屬泳道內
+  const lanes = await sop.locator('.sop-lane').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().top));
+  const laneOf = async (id: string) => {
+    const box = (await sop.locator(`[data-node="${id}"]`).boundingBox())!;
+    const center = box.y + box.height / 2;
+    return lanes.filter((top) => top <= center).length; // 1、2、3
+  };
+  const expected: Record<string, number> = {
+    field: 1, coach: 1, compare: 1,
+    db: 2, sql: 2, dash: 2, district: 2, status: 2,
+    declare: 3, large: 3, docs: 3,
+  };
+  for (const [id, lane] of Object.entries(expected)) expect(await laneOf(id), id).toBe(lane);
+
   const decisions = slide.locator('.sop-node.is-decision');
   await expect(decisions).toHaveCount(2);
   expect(await decisions.first().evaluate((el) => getComputedStyle(el).clipPath)).toMatch(/^polygon\(50% 0(px|%)?, 100% 50%, 50% 100%, 0(px|%)? 50%\)$/);
-  for (const text of ['現場查核紀錄', '新增申報審查文件', '蒐集名單']) await expect(sop).toContainText(text);
-  for (const banned of ['SOP 流程圖', '依環境部查核與計算', '工地彙總為', '地圖上色', '房屋建築另附']) {
-    await expect(slide).not.toContainText(banned);
-  }
-  // 連線標籤由「清單回傳」改為「蒐集名單」
+  // 文字以 \n 指定斷行，逐段比對
+  await expect(sop.locator('[data-node="sql"]')).toContainText(/資料新鮮度依查核\s*紀錄入庫頻率/);
+  await expect(sop.locator('[data-node="status"]')).toContainText('申報前管制啟動中');
+
   const edgeLabels = await slide.locator('.sop-edge-label').allTextContents();
-  expect(edgeLabels).toContain('蒐集名單');
-  expect(edgeLabels).not.toContain('清單回傳');
+  for (const label of ['否：持續監測', '優先輔導名單', '讀取管制狀態', '否：一般申報', '未檢附：補件，無法完成申報', '已檢附：設備清單']) {
+    expect(edgeLabels).toContain(label);
+  }
+  await expect(sop.locator('[data-node="lists"]')).toContainText(/優良工地評選／\s*IoT 前期名單/);
 });
 
 test('第 6 頁：沒有跨專案交互', async ({ page }) => {

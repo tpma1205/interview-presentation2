@@ -10,7 +10,7 @@ const SOLUTION_DOCS = '新增申報審查文件';
 export const GOALS: { title: string; text: string | string[]; solution: string }[] = [
   {
     title: '即時掌握污染數據',
-    text: `即時掌握新北市${NB}29${NB}個行政區的營建工程污染情形，確保符合環境部年度削減量目標`,
+    text: `即時掌握新北市${NB}29${NB}個行政區的營建工程污染情形，確保符合環境部年度削減率目標`,
     solution: SOLUTION_DASHBOARD,
   },
   {

@@ -63,6 +63,56 @@ describe('模擬資料集', () => {
     expect(byDistrict).toEqual(['三重', '中和', '土城', '新店', '新莊', '林口', '林口', '板橋', '淡水', '淡水'].sort());
   });
 
+  it('全市排放量為平滑長尾：第 10 名之後逐名遞減，沒有斷層', () => {
+    const sorted = data.sites.map((s) => s.emission).sort((a, b) => b - a);
+    // 第 10→11 名與之後任兩名之間的落差都不大於 Zipf（指數約 1.5）本身的遞減幅度
+    for (let r = 10; r < sorted.length; r++) {
+      expect(sorted[r] / sorted[r - 1], `第 ${r} → ${r + 1} 名`).toBeGreaterThan(0.8);
+    }
+    // 前 3 名符合 Zipf：第 1 名約為第 2 名的 2.9 倍（2^1.5 ≈ 2.8）
+    expect(sorted[0] / sorted[1]).toBeGreaterThan(2.5);
+    expect(sorted[0] / sorted[1]).toBeLessThan(3.2);
+  });
+
+  it('各行政區內的工地排放量平滑遞減（大規模工程之後不出現斷層）', () => {
+    const largeCount = new Map<string, number>();
+    for (const p of config.largeProjects.sites) largeCount.set(p.district, (largeCount.get(p.district) ?? 0) + 1);
+    for (const d of data.districts) {
+      const own = data.sites
+        .filter((s) => s.district === d.name)
+        .map((s) => s.emission)
+        .sort((a, b) => b - a);
+      // 一般工地（排在該區大規模工程之後）的前 10 名，相鄰比值接近 Zipf 第 1→2 名的比值（約 0.34），
+      // 允許分層抽樣誤差；原本的斷層比值約 0.02–0.09
+      const small = own.slice(largeCount.get(d.name) ?? 0, (largeCount.get(d.name) ?? 0) + 10);
+      for (let k = 1; k < small.length; k++) {
+        expect(small[k] / small[k - 1], `${d.name} 第 ${k} → ${k + 1} 名`).toBeGreaterThan(0.25);
+      }
+    }
+  });
+
+  it('各區總排放量與工地數量級相符：都會區 > 發展區 > 偏鄉區（不含前 10 大工程）', () => {
+    const top10 = new Set(topSites(data.sites, 10).map((s) => s.id));
+    const smallTotal = (name: string) =>
+      data.sites.filter((s) => s.district === name && !top10.has(s.id)).reduce((t, s) => t + s.emission, 0);
+    const avg = (zone: string) => {
+      const ds = data.districts.filter((d) => d.zone === zone);
+      return ds.reduce((t, d) => t + smallTotal(d.name), 0) / ds.length;
+    };
+    expect(avg('metro')).toBeGreaterThan(avg('developing'));
+    expect(avg('developing')).toBeGreaterThan(avg('rural'));
+    // 同分區內，每處工地平均排放量與分區平均同量級（0.4–2.5 倍），總量隨工地數增減
+    for (const zone of ['metro', 'developing', 'rural']) {
+      const ds = data.districts.filter((d) => d.zone === zone);
+      const perSite = ds.map((d) => smallTotal(d.name) / d.siteCount);
+      const mean = perSite.reduce((t, x) => t + x, 0) / perSite.length;
+      ds.forEach((d, i) => {
+        expect(perSite[i] / mean, `${d.name} 每處平均排放`).toBeGreaterThan(0.4);
+        expect(perSite[i] / mean, `${d.name} 每處平均排放`).toBeLessThan(2.5);
+      });
+    }
+  });
+
   it('全市施工中工地共 4,200 處', () => {
     expect(data.sites).toHaveLength(4200);
     expect(data.districts.reduce((s, d) => s + d.siteCount, 0)).toBe(4200);

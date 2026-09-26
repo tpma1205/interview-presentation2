@@ -49,9 +49,6 @@ const TYPE_WEIGHTS: Record<ZoneKey, number[]> = {
   rural: [15, 2, 6, 28, 1, 14, 14, 2, 10, 8],
 };
 
-/** 一般工地的排放規模係數（依分區） */
-const ZONE_SCALE: Record<ZoneKey, number> = { metro: 1, developing: 0.8, rural: 0.35 };
-
 /** 一般工地削減率相對行政區削減率的離散幅度（±%） */
 const SITE_RATE_SPREAD = 12;
 
@@ -72,37 +69,43 @@ interface DraftSite {
 export function buildDataset(config: Config): Dataset {
   const rng = createRng(config.seed);
 
-  // 1. 工地與排放量
-  const drafts: DraftSite[] = [];
-  const largeTotal = config.largeProjects.sites.reduce((s, p) => s + p.emission, 0);
-  const share = config.largeProjects.shareOfCityEmission / 100;
-  const smallTotal = (largeTotal * (1 - share)) / share;
+  // 1. 工地與排放量：全市依 Zipf 長尾分布，第 r 名排放量 = topEmission / r^s。
+  //    指數 s 由「前 N 大占全市比例」反推；前 N 名為設定的大規模工程（依設定順序），
+  //    其餘名次以分層方式分配到各區，使各區內部也依名次平滑遞減、總量與工地數相當。
+  const { sites: largeSites, topEmission, shareOfCityEmission } = config.largeProjects;
+  const exponent = solveZipfExponent(config.totalSites, largeSites.length, shareOfCityEmission / 100);
+  const emissionAt = (rank: number) => topEmission / rank ** exponent;
+
+  const drafts: DraftSite[] = largeSites.map((p, i) => ({
+    district: p.district,
+    zone: config.districts.find((d) => d.name === p.district)!.zone,
+    type: p.type,
+    emission: emissionAt(i + 1),
+    rate: 0,
+    large: true,
+  }));
 
   const siteCounts = allocateSiteCounts(config, rng);
-  const smallWeights: number[] = [];
+  const slots: { key: number; district: string; zone: ZoneKey }[] = [];
   for (const d of config.districts) {
-    const larges = config.largeProjects.sites.filter((p) => p.district === d.name);
-    const count = siteCounts.get(d.name)!;
-    for (const p of larges) {
-      drafts.push({ district: d.name, zone: d.zone, type: p.type, emission: p.emission, rate: 0, large: true });
-    }
-    for (let i = larges.length; i < count; i++) {
+    const hostsLarge = largeSites.some((p) => p.district === d.name);
+    const m = siteCounts.get(d.name)! - largeSites.filter((p) => p.district === d.name).length;
+    // 第 k 處一般工地排在全市約 (k + u) / m 的位置；有大規模工程的區 u 較小，接續其大工程之後
+    const u = hostsLarge ? rng.uniform(0.55, 0.65) : rng.uniform(0.9, 1.1);
+    for (let k = 0; k < m; k++) slots.push({ key: (k + u) / m, district: d.name, zone: d.zone });
+  }
+  slots
+    .sort((a, b) => a.key - b.key)
+    .forEach((slot, i) =>
       drafts.push({
-        district: d.name,
-        zone: d.zone,
-        type: rng.weighted(PROJECT_TYPES, TYPE_WEIGHTS[d.zone]),
-        emission: 0,
+        district: slot.district,
+        zone: slot.zone,
+        type: rng.weighted(PROJECT_TYPES, TYPE_WEIGHTS[slot.zone]),
+        emission: emissionAt(largeSites.length + i + 1),
         rate: 0,
         large: false,
-      });
-      smallWeights.push(ZONE_SCALE[d.zone] * Math.exp(rng.normal() * 0.9));
-    }
-  }
-  const weightSum = smallWeights.reduce((s, w) => s + w, 0);
-  let wi = 0;
-  for (const s of drafts) {
-    if (!s.large) s.emission = (smallWeights[wi++] / weightSum) * smallTotal;
-  }
+      }),
+    );
 
   const emissionOf = (name: string) =>
     drafts.filter((s) => s.district === name).reduce((sum, s) => sum + s.emission, 0);
@@ -168,6 +171,23 @@ export function buildDataset(config: Config): Dataset {
     sites,
     city: { emission: cityEmission, reduction: cityReduction, rate: (cityReduction / cityEmission) * 100 },
   };
+}
+
+/** 求 Zipf 指數 s，使 n 個名次中前 top 名的排放量合計占比等於 share（二分法） */
+function solveZipfExponent(n: number, top: number, share: number): number {
+  const harmonic = (s: number, upTo: number) => {
+    let t = 0;
+    for (let r = 1; r <= upTo; r++) t += r ** -s;
+    return t;
+  };
+  let lo = 0.5;
+  let hi = 4;
+  for (let i = 0; i < 60; i++) {
+    const s = (lo + hi) / 2;
+    if (harmonic(s, top) / harmonic(s, n) < share) lo = s;
+    else hi = s;
+  }
+  return (lo + hi) / 2;
 }
 
 /**
