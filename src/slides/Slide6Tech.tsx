@@ -8,7 +8,7 @@ interface SopNode {
   h: number;
   title: string;
   sub?: string;
-  kind?: 'decision' | 'alert' | 'output';
+  kind?: 'decision' | 'alert';
 }
 
 interface SopEdge {
@@ -18,8 +18,6 @@ interface SopEdge {
   ly?: number;
   /** 標籤對齊：預設 start */
   anchor?: 'start' | 'middle' | 'end';
-  /** 虛線：資料讀取或回饋閉環 */
-  dashed?: boolean;
   /** 流程終點說明（無節點，只有箭頭與文字） */
   terminal?: boolean;
 }
@@ -43,26 +41,27 @@ const dx = (x: number) => x - (DW - W) / 2;
 const NODES: SopNode[] = [
   // 現場查核
   { id: 'field', x: COL.A, y: 30, w: W, h: 80, title: '現場查核' },
-  { id: 'compare', x: COL.B, y: 30, w: W, h: 80, title: '現場比對' },
   { id: 'coach', x: COL.E, y: 30, w: W, h: 80, title: '優先輔導' },
   // 系統平台
   { id: 'db', x: COL.A, y: 175, w: W, h: 100, title: '資料庫', sub: 'MS SQL Server' },
-  { id: 'sql', x: COL.B, y: 175, w: W, h: 100, title: 'SQL 即時運算', sub: '資料新鮮度依查核\n紀錄入庫頻率' },
+  { id: 'sql', x: COL.B, y: 175, w: W, h: 100, title: 'SQL 即時運算' },
   { id: 'dash', x: COL.C, y: 175, w: W, h: 100, title: '儀表板' },
-  { id: 'district', x: dx(COL.D), y: 160, w: DW, h: 130, title: '① 行政區削減率\n< 分區目標？', kind: 'decision' },
+  { id: 'district', x: dx(COL.D), y: 160, w: DW, h: 130, title: '行政區削減率\n< 分區目標？', kind: 'decision' },
   { id: 'status', x: COL.E, y: 175, w: W, h: 100, title: '行政區管制狀態', sub: '申報前管制啟動中', kind: 'alert' },
   // 申報審查
-  { id: 'lists', x: COL.B, y: 365, w: W, h: 80, title: '優良工地評選／\nIoT 前期名單', kind: 'output' },
+  { id: 'lists', x: COL.B, y: 365, w: W, h: 80, title: '優良工地評選／\nIoT 前期名單' },
   { id: 'docs', x: COL.C, y: 365, w: W, h: 80, title: '新增申報審查文件', kind: 'alert' },
-  { id: 'large', x: dx(COL.D), y: 340, w: DW, h: 130, title: '② 未達標區且\n大規模工程？', kind: 'decision' },
+  { id: 'large', x: dx(COL.D), y: 340, w: DW, h: 130, title: '未達標區且\n大規模工程？', kind: 'decision' },
   { id: 'declare', x: COL.E, y: 365, w: W, h: 80, title: '新申報案件' },
 ];
 
 /** 菱形頂點 */
 const D1 = { top: 160, mid: 225, bottom: 290, left: dx(COL.D), right: dx(COL.D) + DW };
 const D2 = { top: 340, mid: 405, bottom: 470, left: dx(COL.D), right: dx(COL.D) + DW };
-/** 「已檢附」往現場比對的折線走 B、C 欄之間的空隙 */
+/** 「已檢附」往現場查核的折線走 B、C 欄之間的空隙 */
 const GAP_BC = (COL.B + W + COL.C) / 2;
+/** 兩條回到「現場查核」的連線分別接在節點右側上、下方，避免重疊 */
+const FIELD_IN = { fromCoach: 50, fromDocs: 90 };
 
 const EDGES: SopEdge[] = [
   { d: `M ${mid(COL.A)} 110 V 175`, label: '查核紀錄', lx: mid(COL.A) + 10, ly: 150 },
@@ -77,7 +76,6 @@ const EDGES: SopEdge[] = [
     label: '讀取管制狀態',
     lx: D2.right + 8,
     ly: 352,
-    dashed: true,
   },
   { d: `M ${COL.E} ${D2.mid} H ${D2.right}` },
   { d: `M ${D2.left} ${D2.mid} H ${COL.C + W}`, label: '是', lx: D2.left - 8, ly: 396, anchor: 'end' },
@@ -91,13 +89,13 @@ const EDGES: SopEdge[] = [
     terminal: true,
   },
   {
-    d: `M ${mid(COL.C)} 365 V 345 H ${GAP_BC} V 70 H ${COL.B + W}`,
+    d: `M ${mid(COL.C)} 365 V 345 H ${GAP_BC} V ${FIELD_IN.fromDocs} H ${COL.A + W}`,
     label: '已檢附：設備清單',
     lx: GAP_BC + 8,
     ly: 130,
   },
   { d: `M ${COL.C} 405 H ${COL.B + W}` },
-  { d: `M ${COL.B} 70 H ${COL.A + W}`, dashed: true },
+  { d: `M ${COL.E} ${FIELD_IN.fromCoach} H ${COL.A + W}` },
 ];
 
 export function Slide6Tech() {
@@ -114,17 +112,9 @@ export function Slide6Tech() {
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
               <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--ink-2)" />
             </marker>
-            <marker id="arrow-dashed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--primary-2)" />
-            </marker>
           </defs>
           {EDGES.map((e) => (
-            <path
-              key={e.d}
-              d={e.d}
-              className={`sop-edge${e.dashed ? ' is-loop' : ''}`}
-              markerEnd={`url(#${e.dashed ? 'arrow-dashed' : 'arrow'})`}
-            />
+            <path key={e.d} d={e.d} className="sop-edge" markerEnd="url(#arrow)" />
           ))}
           {EDGES.filter((e) => e.label).map((e) => (
             <text

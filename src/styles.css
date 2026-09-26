@@ -487,11 +487,6 @@ h3,
   stroke-width: 2;
 }
 
-.sop-edge.is-loop {
-  stroke: var(--primary-2);
-  stroke-dasharray: 6 5;
-}
-
 .sop-edge-label {
   font-size: 20px;
   fill: var(--ink-2);
@@ -522,25 +517,33 @@ h3,
   white-space: pre-line;
 }
 
-/* 產出的名單：以虛線框表示資料輸出 */
-.sop-node.is-output {
-  border-style: dashed;
-  border-color: var(--primary-2);
-  background: var(--primary-soft);
-}
-
 .sop-node span {
   color: var(--ink-2);
   white-space: pre-line;
 }
 
-/* 判斷：標準流程圖菱形 */
+/*
+ * 判斷：標準流程圖菱形，白底加框線。clip-path 會裁掉 border，
+ * 因此以外層（框線色）與內縮的 ::before（白底）疊出框線效果。
+ */
 .sop-node.is-decision {
   align-items: center;
   text-align: center;
   border: none;
-  background: var(--primary-soft);
+  background: var(--ink-3);
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.sop-node.is-decision::before {
+  content: '';
+  position: absolute;
+  inset: 2px 3px;
+  background: var(--surface);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.sop-node.is-decision b {
+  position: relative;
 }
 
 .sop-node.is-alert {

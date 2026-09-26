@@ -88,18 +88,51 @@ test('第 5 頁：流程圖依負責單位分三道，節點位於各自泳道�
     return lanes.filter((top) => top <= center).length; // 1、2、3
   };
   const expected: Record<string, number> = {
-    field: 1, coach: 1, compare: 1,
+    field: 1, coach: 1,
     db: 2, sql: 2, dash: 2, district: 2, status: 2,
     declare: 3, large: 3, docs: 3,
   };
+  await expect(sop.locator('[data-node="compare"]')).toHaveCount(0);
+  await expect(sop).not.toContainText('現場比對');
   for (const [id, lane] of Object.entries(expected)) expect(await laneOf(id), id).toBe(lane);
 
   const decisions = slide.locator('.sop-node.is-decision');
   await expect(decisions).toHaveCount(2);
   expect(await decisions.first().evaluate((el) => getComputedStyle(el).clipPath)).toMatch(/^polygon\(50% 0(px|%)?, 100% 50%, 50% 100%, 0(px|%)? 50%\)$/);
-  // 文字以 \n 指定斷行，逐段比對
-  await expect(sop.locator('[data-node="sql"]')).toContainText(/資料新鮮度依查核\s*紀錄入庫頻率/);
+  await expect(sop.locator('[data-node="sql"]')).toHaveText('SQL 即時運算');
   await expect(sop.locator('[data-node="status"]')).toContainText('申報前管制啟動中');
+  await expect(sop).not.toContainText('①');
+  await expect(sop).not.toContainText('②');
+
+  // 全部實線：連線與框都沒有虛線
+  const dashes = await sop.locator('path.sop-edge').evaluateAll((els) => els.map((e) => getComputedStyle(e).strokeDasharray));
+  expect(dashes.every((d) => d === 'none')).toBe(true);
+  const borders = await sop.locator('.sop-node').evaluateAll((els) => els.map((e) => getComputedStyle(e).borderStyle));
+  expect(borders.every((b) => b !== 'dashed')).toBe(true);
+
+  // 底色：新增申報審查文件、行政區管制狀態為紅色系，其餘白色（菱形看內層）
+  const bg = (id: string) =>
+    sop.locator(`[data-node="${id}"]`).evaluate((el) =>
+      el.classList.contains('is-decision') ? getComputedStyle(el, '::before').backgroundColor : getComputedStyle(el).backgroundColor,
+    );
+  for (const id of ['field', 'coach', 'db', 'sql', 'dash', 'district', 'declare', 'large', 'lists']) {
+    expect(await bg(id), id).toBe('rgb(255, 255, 255)');
+  }
+  for (const id of ['docs', 'status']) expect(await bg(id), id).not.toBe('rgb(255, 255, 255)');
+
+  // 新增申報審查文件與優先輔導都導向現場查核：兩條連線終點落在現場查核節點右緣
+  const field = (await sop.locator('[data-node="field"]').boundingBox())!;
+  const sopBox = (await sop.boundingBox())!;
+  const ends = await sop.locator('path.sop-edge').evaluateAll((els) =>
+    els.map((e) => {
+      const p = (e as SVGPathElement).getPointAtLength((e as SVGPathElement).getTotalLength());
+      return { x: p.x, y: p.y };
+    }),
+  );
+  const intoField = ends.filter(
+    (p) => Math.abs(sopBox.x + p.x - (field.x + field.width)) < 2 && sopBox.y + p.y > field.y && sopBox.y + p.y < field.y + field.height,
+  );
+  expect(intoField).toHaveLength(2);
 
   const edgeLabels = await slide.locator('.sop-edge-label').allTextContents();
   for (const label of ['否：持續監測', '優先輔導名單', '讀取管制狀態', '否：一般申報', '未檢附：補件，無法完成申報', '已檢附：設備清單']) {
