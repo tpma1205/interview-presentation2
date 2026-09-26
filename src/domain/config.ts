@@ -42,6 +42,8 @@ export interface Config {
   compliantMarginRange: [number, number];
   /** 全市削減率（%） */
   cityReductionRate: number;
+  /** 全市施工中工地總數；各區依分區範圍抽樣後等比調整至此總數 */
+  totalSites: number;
   largeProjects: { shareOfCityEmission: number; sites: LargeProjectConfig[] };
 }
 
@@ -58,6 +60,9 @@ export function parseConfig(raw: unknown): Config {
     throw new Error(`config.json 設定錯誤：${msg}`);
   };
   if (names.size !== c.districts.length) fail('行政區名稱重複');
+  if (!Number.isInteger(c.totalSites) || c.totalSites < c.districts.length * 10) {
+    fail(`totalSites 須為整數且每區平均至少 10 處（目前 ${c.totalSites}）`);
+  }
   for (const d of c.districts) {
     if (!ZONE_KEYS.includes(d.zone)) fail(`${d.name} 的 zone「${d.zone}」不存在`);
     if (d.manualAdjusted && !d.adjustReason) fail(`${d.name} 為手動調整但缺少 adjustReason`);

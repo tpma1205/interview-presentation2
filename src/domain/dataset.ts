@@ -7,7 +7,7 @@ import {
 import { createRng, type Rng } from './rng';
 
 export interface Site {
-  /** 例：A-001（字母代表分區：A 都會、B 發展、C 偏鄉） */
+  /** 例：A-0001（字母代表分區：A 都會、B 發展、C 偏鄉） */
   id: string;
   district: string;
   zone: ZoneKey;
@@ -78,11 +78,11 @@ export function buildDataset(config: Config): Dataset {
   const share = config.largeProjects.shareOfCityEmission / 100;
   const smallTotal = (largeTotal * (1 - share)) / share;
 
+  const siteCounts = allocateSiteCounts(config, rng);
   const smallWeights: number[] = [];
   for (const d of config.districts) {
-    const zone = config.zones[d.zone];
     const larges = config.largeProjects.sites.filter((p) => p.district === d.name);
-    const count = rng.int(zone.siteCountRange[0], zone.siteCountRange[1]);
+    const count = siteCounts.get(d.name)!;
     for (const p of larges) {
       drafts.push({ district: d.name, zone: d.zone, type: p.type, emission: p.emission, rate: 0, large: true });
     }
@@ -130,7 +130,7 @@ export function buildDataset(config: Config): Dataset {
   // 4. 工地代號：各分區內隨機排序後編號
   const counters: Record<ZoneKey, number> = { metro: 0, developing: 0, rural: 0 };
   const sites: Site[] = rng.shuffle(drafts).map((s) => ({
-    id: `${config.zones[s.zone].code}-${String(++counters[s.zone]).padStart(3, '0')}`,
+    id: `${config.zones[s.zone].code}-${String(++counters[s.zone]).padStart(4, '0')}`,
     district: s.district,
     zone: s.zone,
     type: s.type,
@@ -168,6 +168,26 @@ export function buildDataset(config: Config): Dataset {
     sites,
     city: { emission: cityEmission, reduction: cityReduction, rate: (cityReduction / cityEmission) * 100 },
   };
+}
+
+/**
+ * 各區施工中工地數：先依分區範圍抽樣，再等比調整使全市合計精確等於 totalSites
+ *（最大餘數法分配捨入差額）。
+ */
+function allocateSiteCounts(config: Config, rng: Rng): Map<string, number> {
+  const raw = config.districts.map((d) => {
+    const [min, max] = config.zones[d.zone].siteCountRange;
+    return { name: d.name, n: rng.int(min, max) };
+  });
+  const scale = config.totalSites / sum(raw.map((r) => r.n));
+  const scaled = raw.map((r) => ({ name: r.name, exact: r.n * scale }));
+  const counts = new Map(scaled.map((s) => [s.name, Math.floor(s.exact)]));
+  const remainder = config.totalSites - sum([...counts.values()]);
+  [...scaled]
+    .sort((a, b) => (b.exact % 1) - (a.exact % 1))
+    .slice(0, remainder)
+    .forEach((s) => counts.set(s.name, counts.get(s.name)! + 1));
+  return counts;
 }
 
 function solveDistrictRates(config: Config, emissionOf: (name: string) => number, rng: Rng) {

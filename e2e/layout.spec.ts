@@ -103,9 +103,9 @@ for (const vp of VIEWPORTS) {
   test.describe(`${vp.width}×${vp.height}`, () => {
     test.use({ viewport: vp });
 
-    test('8 頁與附錄皆無溢出、字級 ≥ 20px', async ({ page }) => {
+    test('7 頁與附錄皆無溢出、字級 ≥ 20px', async ({ page }) => {
       await openOffline(page);
-      for (let p = 1; p <= 8; p++) {
+      for (let p = 1; p <= 7; p++) {
         expect(await layoutProblems(page), `第 ${p} 頁`).toEqual([]);
         await page.keyboard.press('ArrowRight');
       }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-export const PAGE_COUNT = 8;
+export const PAGE_COUNT = 7;
 export const DASHBOARD_PAGE = 3;
 
 export interface DeckState {

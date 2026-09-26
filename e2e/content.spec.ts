@@ -6,19 +6,20 @@ const TITLES = [
   '執行規劃',
   '執行成果',
   '商業價值',
-  'GTM 策略',
   '技術規格、技術架構',
   '規格文件、交互文件',
   '成果為何',
 ];
 
-test('固定 8 頁依序呈現', async ({ page }) => {
+test('固定 7 頁依序呈現，沒有 GTM 策略頁', async ({ page }) => {
   await openOffline(page);
   for (const [i, title] of TITLES.entries()) {
     await expect(page.locator('.slide-title')).toContainText(title);
-    await expect(page.getByTestId('pager')).toHaveText(`${i + 1} / 8`);
+    await expect(page.getByTestId('pager')).toHaveText(`${i + 1} / 7`);
+    await expect(page.getByTestId('slide')).not.toContainText('GTM');
     await page.keyboard.press('ArrowRight');
   }
+  await expect(page.locator('.ruler')).not.toContainText('GTM');
 });
 
 const goTo = async (page: import('@playwright/test').Page, n: number) => {
@@ -59,6 +60,7 @@ test('第 2 頁：六站路線，下方依序為儀表板內容、新增申報�
   const slide = await goTo(page, 2);
   await expect(slide.locator('.route-stop')).toHaveCount(6);
   await expect(slide.locator('.route-stop').last()).toContainText('上線');
+  await expect(slide.locator('.route-stop').nth(1)).toHaveText('與團隊討論\n可行性');
   await expect(slide.locator('.plan-cols .section-label')).toHaveText(['儀表板內容', '新增申報審查文件', '定義說明']);
   for (const text of ['115 年 56%', '116 年 60%', '都會區 65%', '發展區 60%', '偏鄉區 56%', '第 18 條', '第 8 條', '北工施字第1121953044號']) {
     await expect(slide).toContainText(text);
@@ -72,16 +74,9 @@ test('第 4 頁：查核效率', async ({ page }) => {
   await expect(await goTo(page, 4)).toContainText('查核效率');
 });
 
-test('第 5 頁：精簡版 GTM 五步驟', async ({ page }) => {
+test('第 5 頁：流程圖涵蓋資料來源、分析運用、判斷邏輯，判斷為菱形', async ({ page }) => {
   await openOffline(page);
   const slide = await goTo(page, 5);
-  const steps = slide.locator('.route-stop h3');
-  await expect(steps).toHaveText(['市場問題', '目標客群', '定位與價值', '推廣通路', '指標與迭代']);
-});
-
-test('第 6 頁：流程圖涵蓋資料來源、分析運用、判斷邏輯，判斷為菱形', async ({ page }) => {
-  await openOffline(page);
-  const slide = await goTo(page, 6);
   const sop = slide.getByTestId('sop');
   for (const lane of ['資料來源', '分析運用', '判斷邏輯']) await expect(sop).toContainText(lane);
   const decisions = slide.locator('.sop-node.is-decision');
@@ -97,14 +92,14 @@ test('第 6 頁：流程圖涵蓋資料來源、分析運用、判斷邏輯，�
   expect(edgeLabels).not.toContain('清單回傳');
 });
 
-test('第 7 頁：沒有跨專案交互', async ({ page }) => {
+test('第 6 頁：沒有跨專案交互', async ({ page }) => {
   await openOffline(page);
-  await expect(await goTo(page, 7)).not.toContainText('跨專案交互');
+  await expect(await goTo(page, 6)).not.toContainText('跨專案交互');
 });
 
-test('第 8 頁：四項追蹤指標各有量化 KPI，一一對應第 1 頁的目標', async ({ page }) => {
+test('第 7 頁：四項追蹤指標各有量化 KPI，一一對應第 1 頁的目標', async ({ page }) => {
   await openOffline(page);
-  const slide = await goTo(page, 8);
+  const slide = await goTo(page, 7);
   await expect(slide.locator('.numbered-item')).toHaveCount(4);
   await expect(slide.locator('.kpi-name')).toHaveText(['KPI　污染削減率', 'KPI　改善率', 'KPI　建置完成率', 'KPI　報名率']);
   await expect(slide.locator('.kpi-formula')).toHaveCount(4);

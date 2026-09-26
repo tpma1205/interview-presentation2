@@ -10,7 +10,7 @@ test('按 A 進入附錄、再按 A 回到原頁', async ({ page }) => {
   await expect(page.getByTestId('pager')).toHaveText('附錄');
   await expect(page.getByTestId('density-chart')).toBeVisible();
   await page.keyboard.press('a');
-  await expect(page.getByTestId('pager')).toHaveText('4 / 8');
+  await expect(page.getByTestId('pager')).toHaveText('4 / 7');
 });
 
 test('附錄中 ←/→ 不作用，Esc 回到原頁', async ({ page }) => {
@@ -21,7 +21,7 @@ test('附錄中 ←/→ 不作用，Esc 回到原頁', async ({ page }) => {
   await page.keyboard.press('ArrowLeft');
   await expect(page.getByTestId('pager')).toHaveText('附錄');
   await page.keyboard.press('Escape');
-  await expect(page.getByTestId('pager')).toHaveText('2 / 8');
+  await expect(page.getByTestId('pager')).toHaveText('2 / 7');
 });
 
 test('導覽列進入附錄，返回按鈕回到原頁', async ({ page }) => {
@@ -29,7 +29,7 @@ test('導覽列進入附錄，返回按鈕回到原頁', async ({ page }) => {
   await page.keyboard.press('ArrowRight');
   await page.getByRole('button', { name: '附錄' }).click();
   await page.getByRole('button', { name: '← 返回第 2 頁' }).click();
-  await expect(page.getByTestId('pager')).toHaveText('2 / 8');
+  await expect(page.getByTestId('pager')).toHaveText('2 / 7');
 });
 
 test('人口密度圖：29 區、兩條門檻線、八里與三峽手動調整註記', async ({ page }) => {

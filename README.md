@@ -1,6 +1,6 @@
 # 新北市營建工程污染量監測儀表板——面試簡報
 
-單一 HTML、可完全離線開啟的簡報網站：8 頁簡報 + 可操作的儀表板 Demo + 附錄。**所有數值皆為模擬示意。**
+單一 HTML、可完全離線開啟的簡報網站：7 頁簡報 + 可操作的儀表板 Demo + 附錄。**所有數值皆為模擬示意。**
 
 ## 使用
 
@@ -34,11 +34,12 @@ npm run test:e2e     # 對建置結果做離線 E2E 與版面檢查（Playwright
 | `year` | 年度（115） |
 | `seed` | 亂數種子。改變它會重新洗牌工地數、工程類型、一般工地排放與削減率，但下列所有約束仍成立 |
 | `moenvTargets` | 環境部年度目標，如 `{ "115": 56, "116": 60 }` |
-| `zones.<metro/developing/rural>` | 分區設定：`label` 名稱、`code` 工地代號字母、`target` 分區目標（都會 65、發展 60、偏鄉 56）、`minDensity` 門檻下限（附錄門檻線）、`siteCountRange` 施工中工地數範圍 |
+| `zones.<metro/developing/rural>` | 分區設定：`label` 名稱、`code` 工地代號字母、`target` 分區目標（都會 65、發展 60、偏鄉 56）、`minDensity` 門檻下限（附錄門檻線）、`siteCountRange` 每區工地數抽樣範圍（都會 240–360、發展 140–220、偏鄉 15–45，抽樣後等比調整至 `totalSites`） |
 | `districts[]` | 29 區：`name`、`density` 人口密度、`zone` 所屬分區、`manualAdjusted` 是否手動調整、`adjustReason` 調整原因（手動調整時必填，附錄會顯示） |
 | `underperformingDistricts` | **未達標行政區與其削減率**，如 `{ "新莊": 61.8, ... }`。必須低於該區分區目標 |
 | `compliantMarginRange` | 其餘達標區的削減率範圍 = 分區目標 + `[min, max]`（預設 `[1, 10]`） |
 | `cityReductionRate` | **全市削減率**（排放量加權，預設 61.5；目前排放分布下可行範圍約 61–62） |
+| `totalSites` | **全市施工中工地總數**（預設 4200）；各區依 `siteCountRange` 抽樣後等比分配，合計精確等於此值 |
 | `largeProjects.shareOfCityEmission` | 前 10 大工程占全市排放比例（預設 80） |
 | `largeProjects.sites[]` | 前 10 大工程：`district` 所在行政區、`type` 工程類型、`emission` 排放量（公噸 TSP） |
 

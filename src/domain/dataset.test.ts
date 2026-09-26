@@ -63,12 +63,18 @@ describe('模擬資料集', () => {
     expect(byDistrict).toEqual(['三重', '中和', '土城', '新店', '新莊', '林口', '林口', '板橋', '淡水', '淡水'].sort());
   });
 
-  it('施工中工地數：都會 40–90、發展 20–60、偏鄉 3–15', () => {
-    const range = { metro: [40, 90], developing: [20, 60], rural: [3, 15] } as const;
+  it('全市施工中工地共 4,200 處', () => {
+    expect(data.sites).toHaveLength(4200);
+    expect(data.districts.reduce((s, d) => s + d.siteCount, 0)).toBe(4200);
+  });
+
+  it('各區工地數依分區合理分布：都會約 240–360、發展約 140–220、偏鄉約 15–45 處', () => {
+    // 抽樣後等比調整為全市總數，容許 5% 偏差
+    const range = { metro: [240, 360], developing: [140, 220], rural: [15, 45] } as const;
     for (const d of data.districts) {
       const [min, max] = range[d.zone];
-      expect(d.siteCount, d.name).toBeGreaterThanOrEqual(min);
-      expect(d.siteCount, d.name).toBeLessThanOrEqual(max);
+      expect(d.siteCount, d.name).toBeGreaterThanOrEqual(Math.floor(min * 0.95));
+      expect(d.siteCount, d.name).toBeLessThanOrEqual(Math.ceil(max * 1.05));
     }
   });
 
@@ -81,11 +87,11 @@ describe('模擬資料集', () => {
     }
   });
 
-  it('工地代號為分區字母 + 三位流水號，且不重複', () => {
+  it('工地代號為分區字母 + 四位流水號，且不重複', () => {
     const letter = { metro: 'A', developing: 'B', rural: 'C' } as const;
     for (const s of data.sites) {
       expect(s.id.startsWith(`${letter[s.zone]}-`)).toBe(true);
-      expect(s.id).toMatch(/^[ABC]-\d{3}$/);
+      expect(s.id).toMatch(/^[ABC]-\d{4}$/);
     }
     expect(new Set(data.sites.map((s) => s.id)).size).toBe(data.sites.length);
   });

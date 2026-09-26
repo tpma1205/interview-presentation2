@@ -4,9 +4,9 @@
   "seed": 115065,
   "moenvTargets": { "115": 56, "116": 60 },
   "zones": {
-    "metro": { "label": "都會區", "code": "A", "target": 65, "minDensity": 10000, "siteCountRange": [40, 90] },
-    "developing": { "label": "發展區", "code": "B", "target": 60, "minDensity": 1500, "siteCountRange": [20, 60] },
-    "rural": { "label": "偏鄉區", "code": "C", "target": 56, "minDensity": 0, "siteCountRange": [3, 15] }
+    "metro": { "label": "都會區", "code": "A", "target": 65, "minDensity": 10000, "siteCountRange": [240, 360] },
+    "developing": { "label": "發展區", "code": "B", "target": 60, "minDensity": 1500, "siteCountRange": [140, 220] },
+    "rural": { "label": "偏鄉區", "code": "C", "target": 56, "minDensity": 0, "siteCountRange": [15, 45] }
   },
   "districts": [
     { "name": "永和", "density": 36000, "zone": "metro", "manualAdjusted": false, "adjustReason": null },
@@ -42,6 +42,7 @@
   "underperformingDistricts": { "新莊": 61.8, "三重": 63.1, "林口": 56.5, "淡水": 57.2 },
   "compliantMarginRange": [1, 10],
   "cityReductionRate": 61.5,
+  "totalSites": 4200,
   "largeProjects": {
     "shareOfCityEmission": 80,
     "sites": [

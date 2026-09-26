@@ -382,37 +382,7 @@ h3,
   white-space: pre-line;
 }
 
-.route-stop p {
-  margin: 0;
-  font-size: 22px;
-  color: var(--ink-2);
-  white-space: pre-line;
-}
-
-.route-stop .step {
-  display: block;
-  margin-top: 14px;
-  font-size: 20px;
-  color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-}
-
-.route-stop .step + h3 {
-  margin-top: 0;
-}
-
-/* ---------- 第 2 頁：定義規則 ---------- */
-.rules {
-  margin-top: 28px;
-  padding-top: 18px;
-  border-top: 1px solid var(--rule);
-}
-
-.rules .section-label {
-  margin: 0;
-  margin-right: 10px;
-}
-
+/* ---------- 第 2 頁：觸發條件與公式 ---------- */
 .trigger {
   display: flex;
   align-items: center;
@@ -434,38 +404,6 @@ h3,
 
 .trigger-out b {
   color: var(--primary);
-}
-
-.rule-details {
-  display: grid;
-  grid-template-columns: 0.8fr 1.3fr 1fr;
-  column-gap: 48px;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid var(--rule-soft);
-  font-size: 20px;
-  line-height: 1.4;
-  color: var(--ink-2);
-}
-
-.rule-details h4 {
-  margin: 0 0 6px;
-  font-size: 20px;
-  color: var(--ink);
-}
-
-.rule-details ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.rule-details li + li {
-  margin-top: 4px;
-}
-
-.rule-details .cite {
-  color: var(--ink-3);
 }
 
 .frac {

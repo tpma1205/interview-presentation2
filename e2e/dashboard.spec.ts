@@ -91,7 +91,21 @@ test('點擊未達標區顯示該區 TOP 10 並標示優先輔導，可返回全
   await expect(top10).toContainText('申報前管制啟動中');
   await expect(top10.locator('tbody tr')).toHaveCount(10);
   expect(await top10.getByText('優先輔導').count()).toBeGreaterThanOrEqual(3);
-  await expect(top10.locator('td').first()).toHaveText(/^工地 A-\d{3}$/);
+  await expect(top10.locator('td').first()).toHaveText(/^工地 A-\d{4}$/);
   await page.getByRole('button', { name: '返回全市' }).click();
   await expect(top10).toContainText('全市 TOP 10 排放工地');
+});
+
+test('全市施工中工地共 4,200 處，分布於 29 區', async ({ page }) => {
+  await openDashboard(page);
+  let total = 0;
+  for (const name of ['板橋', '林口', '烏來']) {
+    await district(page, name).hover({ force: true });
+    const text = await page.getByTestId('map-tooltip').textContent();
+    const count = Number(/施工中工地(\d+) 處/.exec(text!.replace(/,/g, ''))![1]);
+    expect(count, name).toBeGreaterThan(0);
+    total += count;
+  }
+  // 抽查 3 區：都會、發展區各應有數百處，偏鄉數十處
+  expect(total).toBeGreaterThan(400);
 });

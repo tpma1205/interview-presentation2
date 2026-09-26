@@ -22,7 +22,7 @@ export function Slide2Plan() {
       <Route
         stops={[
           { title: '定義規則' },
-          { title: '與主管討論\n可行性' },
+          { title: '與團隊討論\n可行性' },
           { title: '與機關達成共識\n並取得支持' },
           { title: '撰寫需求\n說明書' },
           { title: '資訊部門\n開發及測試' },
