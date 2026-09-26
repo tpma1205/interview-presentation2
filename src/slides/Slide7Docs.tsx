@@ -37,7 +37,7 @@ export function Slide7Docs() {
               <li>需求定義</li>
               <li>UI 定義</li>
               <li>指標與計算邏輯</li>
-              <li>SQL</li>
+              <li>提供 SQL 查詢語法</li>
             </ul>
           </div>
           <div className="role">
