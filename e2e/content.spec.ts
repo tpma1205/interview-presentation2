@@ -93,7 +93,7 @@ test('第 5 頁：流程圖依負責單位分三道，節點位於各自泳道�
     declare: 3, large: 3, docs: 3,
   };
   await expect(sop.locator('[data-node="compare"]')).toHaveCount(0);
-  await expect(sop).not.toContainText('現場比對');
+  expect((await sop.locator('.sop-node').allTextContents()).some((t) => t.includes('現場比對'))).toBe(false);
   for (const [id, lane] of Object.entries(expected)) expect(await laneOf(id), id).toBe(lane);
 
   const decisions = slide.locator('.sop-node.is-decision');
@@ -134,8 +134,19 @@ test('第 5 頁：流程圖依負責單位分三道，節點位於各自泳道�
   );
   expect(intoField).toHaveLength(2);
 
+  // 已檢附分岔：一條到現場查核、一條由上方進入優良工地評選／IoT 前期名單；不再有新增申報審查文件直連名單的橫線
+  const lists = (await sop.locator('[data-node="lists"]').boundingBox())!;
+  const intoListsTop = ends.filter(
+    (p) => Math.abs(sopBox.y + p.y - lists.y) < 2 && sopBox.x + p.x > lists.x && sopBox.x + p.x < lists.x + lists.width,
+  );
+  expect(intoListsTop).toHaveLength(1);
+  const intoListsRight = ends.filter((p) => Math.abs(sopBox.x + p.x - (lists.x + lists.width)) < 2);
+  expect(intoListsRight).toHaveLength(0);
+  await expect(sop.getByTestId('attached-branch')).toHaveCount(1);
+
   const edgeLabels = await slide.locator('.sop-edge-label').allTextContents();
-  for (const label of ['否：持續監測', '優先輔導名單', '讀取管制狀態', '否：一般申報', '未檢附：補件，無法完成申報', '已檢附：設備清單']) {
+  expect(edgeLabels).not.toContain('已檢附：設備清單');
+  for (const label of ['否：持續監測', '優先輔導名單', '讀取管制狀態', '否：一般申報', '未檢附：補件，無法完成申報', '已檢附', '設備清單（現場比對依據）']) {
     expect(edgeLabels).toContain(label);
   }
   await expect(sop.locator('[data-node="lists"]')).toContainText(/優良工地評選／\s*IoT 前期名單/);

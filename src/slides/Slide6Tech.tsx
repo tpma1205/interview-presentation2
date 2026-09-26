@@ -20,6 +20,8 @@ interface SopEdge {
   anchor?: 'start' | 'middle' | 'end';
   /** 流程終點說明（無節點，只有箭頭與文字） */
   terminal?: boolean;
+  /** 分岔前的主幹，不畫箭頭 */
+  trunk?: boolean;
 }
 
 /**
@@ -60,6 +62,9 @@ const D1 = { top: 160, mid: 225, bottom: 290, left: dx(COL.D), right: dx(COL.D) 
 const D2 = { top: 340, mid: 405, bottom: 470, left: dx(COL.D), right: dx(COL.D) + DW };
 /** 「已檢附」往現場查核的折線走 B、C 欄之間的空隙 */
 const GAP_BC = (COL.B + W + COL.C) / 2;
+/** 「已檢附」主幹自新增申報審查文件頂端上行至此高度後，於 GAP_BC 分岔 */
+const ATTACHED_Y = 335;
+const BRANCH = { x: GAP_BC, y: ATTACHED_Y };
 /** 兩條回到「現場查核」的連線分別接在節點右側上、下方，避免重疊 */
 const FIELD_IN = { fromCoach: 50, fromDocs: 90 };
 
@@ -88,13 +93,15 @@ const EDGES: SopEdge[] = [
     anchor: 'middle',
     terminal: true,
   },
+  // 已檢附：主幹（無箭頭）後分成兩條
+  { d: `M ${mid(COL.C)} 365 V ${ATTACHED_Y} H ${BRANCH.x}`, label: '已檢附', lx: mid(COL.C) + 8, ly: 358, trunk: true },
   {
-    d: `M ${mid(COL.C)} 365 V 345 H ${GAP_BC} V ${FIELD_IN.fromDocs} H ${COL.A + W}`,
-    label: '已檢附：設備清單',
+    d: `M ${BRANCH.x} ${BRANCH.y} V ${FIELD_IN.fromDocs} H ${COL.A + W}`,
+    label: '設備清單（現場比對依據）',
     lx: GAP_BC + 8,
     ly: 130,
   },
-  { d: `M ${COL.C} 405 H ${COL.B + W}` },
+  { d: `M ${BRANCH.x} ${BRANCH.y} H ${mid(COL.B)} V 365` },
   { d: `M ${COL.E} ${FIELD_IN.fromCoach} H ${COL.A + W}` },
 ];
 
@@ -114,9 +121,9 @@ export function Slide6Tech() {
             </marker>
           </defs>
           {EDGES.map((e) => (
-            <path key={e.d} d={e.d} className="sop-edge" markerEnd="url(#arrow)" />
+            <path key={e.d} d={e.d} className="sop-edge" markerEnd={e.trunk ? undefined : 'url(#arrow)'} />
           ))}
-          {EDGES.filter((e) => e.label).map((e) => (
+          <circle cx={BRANCH.x} cy={BRANCH.y} r={4} className="sop-junction" data-testid="attached-branch" />          {EDGES.filter((e) => e.label).map((e) => (
             <text
               key={`${e.d}-label`}
               x={e.lx}

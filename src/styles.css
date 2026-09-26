@@ -487,6 +487,10 @@ h3,
   stroke-width: 2;
 }
 
+.sop-junction {
+  fill: var(--ink-2);
+}
+
 .sop-edge-label {
   font-size: 20px;
   fill: var(--ink-2);
